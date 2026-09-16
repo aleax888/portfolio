@@ -1,0 +1,54 @@
+name: portfolio
+description: "A new Flutter project."
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.11.4
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.8
+  lottie: ^3.3.2
+  url_launcher: ^6.3.2
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    # Animations
+    - assets/animations/
+
+    # Images
+    - assets/images/certifications/platzi/
+    - assets/images/certifications/uni/
+    - assets/images/debug/
+    - assets/images/degrees/ucsp/
+    - assets/images/degrees/unsa/
+    - assets/images/logos/education/
+    - assets/images/logos/other/
+    - assets/images/logos/tech_stack/
+    - assets/images/me/
+    - assets/images/projects/
+
+    # Icons
+    - assets/icons/
+
+  fonts:
+    - family: BebasNeue
+      fonts:
+        - asset: assets/fonts/bebas_neue_regular.ttf
+    - family: FragmentMono
+      fonts:
+      - asset: assets/fonts/fragment_mono_regular.ttf
+      - asset: assets/fonts/fragment_mono_italic.ttf
+        style: italic
+    - family: Inter
+      fonts:
+      - asset: assets/fonts/inter_regular.ttf
