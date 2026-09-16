@@ -1,7 +1,7 @@
 enum ProjectEnum {
   ledPanel,
   gymFlow,
-  imgToTextArt;
+  textArt;
 
   String get image =>
       'assets/images/projects/${name.toLowerCase().replaceAll(' ', '_')}.png';
@@ -12,19 +12,19 @@ enum ProjectEnum {
         return 'Led Panel';
       case ProjectEnum.gymFlow:
         return 'GymFlow';
-      case ProjectEnum.imgToTextArt:
-        return 'IMG to Text art';
+      case ProjectEnum.textArt:
+        return 'Text art';
     }
   }
 
   String get description {
     switch (this) {
       case ProjectEnum.ledPanel:
-        return 'A tiny app built to bring LED displays to life with playful marquee-style animations and customizable scrolling text.';
+        return 'LED displays to life with playful marquee-style animations and customizable.';
       case ProjectEnum.gymFlow:
         return 'A smart fitness app that analyzes body joints in real time to automatically detect movements and count exercise repetitions.';
-      case ProjectEnum.imgToTextArt:
-        return 'Upload a picture and watch it transform into detailed ASCII art made entirely of characters.';
+      case ProjectEnum.textArt:
+        return 'Upload a picture and watch it transform into detailed text art.';
     }
   }
 
@@ -34,7 +34,7 @@ enum ProjectEnum {
         return ['Flutter'];
       case ProjectEnum.gymFlow:
         return ['Flutter', 'TensorFlow Lite'];
-      case ProjectEnum.imgToTextArt:
+      case ProjectEnum.textArt:
         return ['Python', 'FastAPI', 'OpenCV'];
     }
   }
@@ -45,7 +45,7 @@ enum ProjectEnum {
         return 'https://github.com/aleax888/led_panel';
       case ProjectEnum.gymFlow:
         return 'https://www.google.com/search?q=comming+soon&oq=comming+soon';
-      case ProjectEnum.imgToTextArt:
+      case ProjectEnum.textArt:
         return 'https://github.com/aleax888/img_to_text_art';
     }
   }

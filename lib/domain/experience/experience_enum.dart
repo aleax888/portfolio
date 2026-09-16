@@ -28,7 +28,7 @@ enum ExperienceEnum {
   String get position {
     switch (this) {
       case ExperienceEnum.cerv:
-        return 'Senior Mobile Engineer';
+        return 'Full-Stack Engineer';
       case ExperienceEnum.navia:
         return 'Full-Stack Engineer';
       case ExperienceEnum.innovaSolutions:

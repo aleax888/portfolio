@@ -27,7 +27,7 @@ class ExperienceMessageWidget extends StatelessWidget {
               ),
             ),
             TextSpan(
-              text: "mobile products ",
+              text: "software products ",
               style: TextStyle(
                 color: ColorPaletteConstants.tertiary,
                 fontSize: 60,

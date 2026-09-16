@@ -26,7 +26,7 @@ class AiSide extends StatelessWidget {
                     origin: .fromLeft,
                     scrollController: scrollController,
                     child: Text(
-                      'AI-Augmented Software Engineer',
+                      'AI-POWERED',
                       style: TextStyle(
                         fontFamily:  TextFamilyConstants.primary,
                         color: ColorPaletteConstants.secondary,

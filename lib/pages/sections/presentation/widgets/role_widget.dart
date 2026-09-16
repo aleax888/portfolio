@@ -25,7 +25,7 @@ class _RoleWidgetState extends State<RoleWidget> {
         spacing: 0.0,
         children: [
           Text(
-            "MOBILE",
+            "SOFTWARE",
             style: TextStyle(
               height: 0.8,
               fontFamily:  TextFamilyConstants.primary,

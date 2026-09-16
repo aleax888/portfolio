@@ -41,7 +41,7 @@ class HumanSide extends StatelessWidget {
                     origin: .fromRight,
                     scrollController: scrollController,
                     child: Text(
-                      'Mobile Software\nEngineer',
+                      'Software\nEngineer',
                       style: TextStyle(
                         fontFamily:  TextFamilyConstants.primary,
                         color: ColorPaletteConstants.quaternary,
