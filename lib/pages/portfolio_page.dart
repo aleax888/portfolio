@@ -22,7 +22,7 @@ class PortfolioPage extends StatefulWidget {
 }
 
 class _PortfolioPageState extends State<PortfolioPage> {
-  final ScrollController _scrollController = ScrollController();
+  final _scrollController = InertiaScrollController();
 
   // Keys de cada sección que querés que sea un "punto de interés"
   final _presentationKey = GlobalKey();
@@ -55,7 +55,7 @@ class _PortfolioPageState extends State<PortfolioPage> {
           SafeArea(
             child: Center(
               child: SmoothScrollView(
-                scrollController: _scrollController,
+                inertiaController: _scrollController,
                 child: Column(
                   spacing: SpacingConstants.xxl,
                   children: [

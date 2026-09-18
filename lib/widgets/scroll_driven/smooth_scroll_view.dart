@@ -1,92 +1,156 @@
-import 'dart:math' as math;
-
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/physics.dart';
 import 'package:flutter/scheduler.dart';
 
-class SmoothScrollView extends StatefulWidget {
-  final Widget child;
-  final ScrollController scrollController;
-  final double friction; // desaceleración (0.9–0.98)
-  final double smoothing; // filtro de ruido
-  final double multiplier; // sensibilidad del scroll
-  const SmoothScrollView({
-    super.key,
-    required this.child,
-    required this.scrollController,
-    this.friction = 0.92,
-    this.smoothing = 0.15,
-    this.multiplier = 0.04,
-  });
+/// Controla la inercia al SOLTAR un drag (dedo o thumb de la scrollbar).
+class InertiaScrollPhysics extends ClampingScrollPhysics {
+  /// Más bajo = desliza más lejos (más "resbaloso"). Default de Flutter: 0.015
+  final double friction;
+
+  const InertiaScrollPhysics({this.friction = 0.015, super.parent});
 
   @override
-  State<SmoothScrollView> createState() => _SmoothScrollViewState();
+  InertiaScrollPhysics applyTo(ScrollPhysics? ancestor) {
+    return InertiaScrollPhysics(friction: friction, parent: buildParent(ancestor));
+  }
+
+  @override
+  Simulation? createBallisticSimulation(ScrollMetrics position, double velocity) {
+    final tolerance = toleranceFor(position);
+
+    // fuera de rango (overscroll): dejamos el rebote por defecto
+    if (position.outOfRange) {
+      return super.createBallisticSimulation(position, velocity);
+    }
+
+    if (velocity.abs() < tolerance.velocity) return null;
+    if (velocity > 0 && position.pixels >= position.maxScrollExtent) return null;
+    if (velocity < 0 && position.pixels <= position.minScrollExtent) return null;
+
+    return ClampingScrollSimulation(
+      position: position.pixels,
+      velocity: velocity,
+      friction: friction,
+      tolerance: tolerance,
+    );
+  }
 }
 
-class _SmoothScrollViewState extends State<SmoothScrollView>
-    with SingleTickerProviderStateMixin {
-  late Ticker _ticker;
+/// ScrollPosition custom: intercepta SOLO la rueda del mouse/trackpad
+/// para darle velocidad, smoothing y desaceleración propios.
+class InertiaScrollPosition extends ScrollPositionWithSingleContext {
+  InertiaScrollPosition({
+    required super.physics,
+    required super.context,
+    super.initialPixels,
+    super.keepScrollOffset,
+    super.oldPosition,
+    super.debugLabel,
+    required this.multiplier,
+    required this.smoothing,
+    required this.deceleration,
+  });
 
-  double _velocity = 0.0;
-  double _targetVelocity = 0.0;
+  final double multiplier;   // sensibilidad de la rueda
+  final double smoothing;    // filtro de ruido (low-pass)
+  final double deceleration; // 0-1, qué tan rápido se frena el momentum
+
+  double _currentVelocity = 0;
+  double _targetVelocity = 0;
+  Ticker? _ticker;
 
   @override
-  void initState() {
-    super.initState();
-
-    _ticker = createTicker(_tick)..start();
+  void pointerScroll(double delta) {
+    _targetVelocity += delta * multiplier;
+    _ticker ??= context.vsync.createTicker(_onTick);
+    if (!_ticker!.isTicking) _ticker!.start();
   }
 
-  void _tick(Duration elapsed) {
-    // 🎯 1. Suavizado (low-pass filter)
-    _velocity += (_targetVelocity - _velocity) * widget.smoothing;
+  void _onTick(Duration elapsed) {
+    _currentVelocity += (_targetVelocity - _currentVelocity) * smoothing;
+    _targetVelocity *= deceleration;
 
-    // 🎯 2. Aplicar movimiento
-    if (_velocity.abs() > 0.01) {
-      widget.scrollController.jumpTo(
-        _clampScroll(widget.scrollController.offset + _velocity),
-      );
-
-      // 🎯 3. Fricción (desaceleración)
-      _targetVelocity *= widget.friction;
-    } else {
-      _velocity = 0;
+    if (_currentVelocity.abs() < 0.02 && _targetVelocity.abs() < 0.02) {
+      _currentVelocity = 0;
       _targetVelocity = 0;
+      _ticker?.stop();
+      return;
     }
-  }
 
-  double _clampScroll(double value) {
-    if (!widget.scrollController.hasClients) return value;
-
-    final min = widget.scrollController.position.minScrollExtent;
-    final max = widget.scrollController.position.maxScrollExtent;
-
-    return math.min(max, math.max(min, value));
-  }
-
-  void _onPointerSignal(PointerSignalEvent event) {
-    if (event is PointerScrollEvent) {
-      // 📉 Convertimos la “sierra” en input acumulativo
-      _targetVelocity += event.scrollDelta.dy * widget.multiplier;
-    }
+    jumpTo((pixels + _currentVelocity).clamp(minScrollExtent, maxScrollExtent));
   }
 
   @override
   void dispose() {
-    _ticker.dispose();
-    widget.scrollController.dispose();
+    _ticker?.dispose();
     super.dispose();
   }
+}
+
+/// Controller que "inyecta" el InertiaScrollPosition de arriba.
+class InertiaScrollController extends ScrollController {
+  InertiaScrollController({
+    this.wheelMultiplier = 0.1,
+    this.wheelSmoothing = 0.1,
+    this.wheelDeceleration = 0.94,
+    super.initialScrollOffset = 0.0,
+    super.keepScrollOffset = true,
+    super.debugLabel,
+  });
+
+  final double wheelMultiplier;
+  final double wheelSmoothing;
+  final double wheelDeceleration;
+
+  @override
+  ScrollPositionWithSingleContext createScrollPosition(
+    ScrollPhysics physics,
+    ScrollContext context,
+    ScrollPosition? oldPosition,
+  ) {
+    return InertiaScrollPosition(
+      physics: physics,
+      context: context,
+      initialPixels: initialScrollOffset,
+      keepScrollOffset: keepScrollOffset,
+      oldPosition: oldPosition,
+      debugLabel: debugLabel,
+      multiplier: wheelMultiplier,
+      smoothing: wheelSmoothing,
+      deceleration: wheelDeceleration,
+    );
+  }
+}
+
+/// Widget final: sin Listener, sin gesture-hacking, sin bloquear nada.
+class SmoothScrollView extends StatelessWidget {
+  final Widget child;
+  final InertiaScrollController inertiaController;
+  final double friction; // inercia del fling en touch / scrollbar
+  final bool showScrollbar;
+
+  const SmoothScrollView({
+    super.key,
+    required this.child,
+    required this.inertiaController,
+    this.friction = 0.015,
+    this.showScrollbar = true,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Listener(
-      onPointerSignal: _onPointerSignal,
-      child: SingleChildScrollView(
-        controller: widget.scrollController,
-        physics: const NeverScrollableScrollPhysics(),
-        child: widget.child,
-      ),
+    final view = SingleChildScrollView(
+      controller: inertiaController,
+      physics: InertiaScrollPhysics(friction: friction),
+      child: child,
+    );
+
+    if (!showScrollbar) return view;
+
+    return Scrollbar(
+      controller: inertiaController,
+      thumbVisibility: true,
+      child: view,
     );
   }
 }
