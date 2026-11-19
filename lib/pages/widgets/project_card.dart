@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:portfolio/design_system/constants/layout_constants.dart';
+import 'package:portfolio/widgets/layout/viewport_orientation_builder.dart';
 import 'package:portfolio/design_system/extensions/context_extensions.dart';
 import 'package:portfolio/design_system/utils/responsive_font_size.dart';
 import 'package:portfolio/design_system/constants/border_constants.dart';
@@ -18,63 +18,68 @@ class ProjectCard extends StatelessWidget {
   final String description;
   final List<String> techStack;
   final String link;
-  final Axis axis;
+  final Axis? axis;
 
   const ProjectCard({
     super.key,
     this.imagePath = 'assets/images/debug/work_in_progress.png',
-    this.axis = Axis.horizontal,
     required this.title,
     required this.description,
     required this.techStack,
     required this.link,
+    this.axis,
   });
 
   @override
   Widget build(BuildContext context) {
     return PressableWidget(
-      onTap: () =>
-          launchUrl(Uri.parse(link), mode: LaunchMode.externalApplication),
+      onTap: () => launchUrl(Uri.parse(link), mode: .externalApplication),
       child: CustomContainer(
-        padding: EdgeInsets.zero,
+        padding: .zero,
         hoverColor: ColorPaletteConstants.quinary,
         child: ClipRRect(
           borderRadius: const BorderRadius.all(
             Radius.circular(BorderRadiusConstants.xl),
           ),
-          child: LayoutBuilder(
-            builder: (context, constraints) {
+          child: ViewportOrientationBuilder(
+            builder: (context, orientation) {
               final image = AspectRatio(
                 aspectRatio: 1.6,
-                child: Image.asset(imagePath, fit: BoxFit.cover),
+                child: Image.asset(imagePath, fit: .cover),
               );
               final content = Padding(
-                padding: const EdgeInsets.all(SpacingConstants.s),
+                padding: const EdgeInsets.all(SpacingConstants.m),
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  spacing: SpacingConstants.xs,
+                  crossAxisAlignment: .start,
+                  spacing: SpacingConstants.s,
                   children: [
+                    // Title -------------------------------------------------------
                     Text(
                       title,
                       style: TextStyle(
-                        fontFamily: TextFamilyConstants.secondary,
                         color: TextColorConstants.light,
-                        fontWeight: TextWeightConstants.bold,
                         fontSize: ResponsiveFontSize.logarithmic(
                           TextSizeConstants.xl,
                           context.viewportSize,
                           minScale: 0.7,
                         ),
+                        fontFamily: TextFamilyConstants.secondary,
+                        fontWeight: TextWeightConstants.bold,
                       ),
                     ),
+
+                    // Description -------------------------------------------------------
                     Text(
                       description,
                       style: const TextStyle(
-                        fontFamily: TextFamilyConstants.secondary,
                         color: BasicColorConstants.gray,
                         fontSize: TextSizeConstants.s,
+                        fontFamily: TextFamilyConstants.secondary,
+                        fontWeight: TextWeightConstants.regular,
                       ),
                     ),
+
+                    // Tech Stack -------------------------------------------------------
                     Wrap(
                       spacing: SpacingConstants.xs,
                       runSpacing: SpacingConstants.xs,
@@ -89,8 +94,10 @@ class ProjectCard extends StatelessWidget {
                   ],
                 ),
               );
-              if (axis == Axis.horizontal &&
-                  constraints.maxWidth >= LayoutConstants.compactSplitWidth) {
+              final horizontal = axis == null
+                  ? orientation == .landscape
+                  : axis == .horizontal;
+              if (horizontal) {
                 return Row(
                   children: [
                     Expanded(flex: 2, child: image),
@@ -99,7 +106,7 @@ class ProjectCard extends StatelessWidget {
                 );
               }
               return Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
+                crossAxisAlignment: .stretch,
                 children: [image, content],
               );
             },

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import 'package:portfolio/design_system/constants/layout_constants.dart';
 import 'package:portfolio/design_system/constants/spacing_constants.dart';
+import 'package:portfolio/widgets/layout/viewport_orientation_builder.dart';
 
 class ThreeCardLayout extends StatelessWidget {
   final Widget left;
@@ -19,29 +19,33 @@ class ThreeCardLayout extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        // Breakpoint móvil
-        if (constraints.maxWidth < LayoutConstants.tabletWidth) {
+    return ViewportOrientationBuilder(
+      builder: (context, orientation) {
+        if (orientation == .portrait) {
           return Column(
             spacing: spacing,
             children: [left, topRight, bottomRight],
           );
         }
 
-        return Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          spacing: spacing,
-          children: [
-            Expanded(flex: 3, child: left),
-            Expanded(
-              flex: 4,
-              child: Column(
-                spacing: spacing,
-                children: [topRight, bottomRight],
+        return IntrinsicHeight(
+          child: Row(
+            crossAxisAlignment: .stretch,
+            spacing: spacing,
+            children: [
+              Expanded(flex: 3, child: left),
+              Expanded(
+                flex: 4,
+                child: Column(
+                  spacing: spacing,
+                  children: [
+                    Expanded(child: topRight),
+                    Expanded(child: bottomRight),
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         );
       },
     );

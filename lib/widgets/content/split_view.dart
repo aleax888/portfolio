@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:portfolio/design_system/constants/spacing_constants.dart';
-import 'package:portfolio/design_system/extensions/context_extensions.dart';
+import 'package:portfolio/widgets/layout/viewport_orientation_builder.dart';
 
 /// Un widget que divide el espacio disponible entre dos hijos [left] y [right].
 ///
@@ -36,11 +36,12 @@ class SplitView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final screen = context.viewportSize;
-    return LayoutBuilder(
-      builder: (context, constraints) => screen.height > screen.width
-          ? _buildColumn(expandBottom && constraints.hasBoundedHeight)
-          : _buildRow(constraints.maxWidth),
+    return ViewportOrientationBuilder(
+      builder: (context, orientation) => LayoutBuilder(
+        builder: (context, constraints) => orientation == .portrait
+            ? _buildColumn(expandBottom && constraints.hasBoundedHeight)
+            : _buildRow(constraints.maxWidth),
+      ),
     );
   }
 

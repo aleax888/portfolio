@@ -75,11 +75,7 @@ class _PortfolioPageState extends State<PortfolioPage> {
                     ),
 
                     // Cross Platform (Hook) -------------------------------------------------------
-                    CustomConstrain(
-                      child: CrossPlatformAnimation(
-                        scrollController: _scrollController,
-                      ),
-                    ),
+                    CrossPlatformAnimation(scrollController: _scrollController),
 
                     // Tech Stack (Section) -------------------------------------------------------
                     GrowingViewportSection(
@@ -92,12 +88,8 @@ class _PortfolioPageState extends State<PortfolioPage> {
                     // Projects (Section) -------------------------------------------------------
                     GrowingViewportSection(
                       key: _projectsKey,
-                      child: Center(
-                        child: CustomConstrain(
-                          child: ProjectsSection(
-                            scrollController: _scrollController,
-                          ),
-                        ),
+                      child: ProjectsSection(
+                        scrollController: _scrollController,
                       ),
                     ),
 
