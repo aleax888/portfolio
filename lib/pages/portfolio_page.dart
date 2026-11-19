@@ -9,7 +9,6 @@ import 'package:portfolio/pages/sections/experience/animation/cross_platform_ani
 import 'package:portfolio/pages/sections/experience/section/experience_section.dart';
 import 'package:portfolio/pages/sections/presentation/presentation_section.dart';
 import 'package:portfolio/pages/sections/projects/projects_section.dart';
-import 'package:portfolio/pages/sections/stack/ai_vs_human/ai_vs_human_split_screen.dart';
 import 'package:portfolio/pages/sections/stack/slider/tech_stack_slider.dart';
 import 'package:portfolio/pages/widgets/logo.dart';
 import 'package:portfolio/widgets/layout/custom_appbar/custom_app_bar.dart';
@@ -85,15 +84,8 @@ class _PortfolioPageState extends State<PortfolioPage> {
                     // Tech Stack (Section) -------------------------------------------------------
                     GrowingViewportSection(
                       key: _techStackKey,
-                      child: Column(
-                        spacing: SpacingConstants.m,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          TechStackSlider(scrollController: _scrollController),
-                          AiVsHumanSplitScreen(
-                            scrollController: _scrollController,
-                          ),
-                        ],
+                      child: TechStackSlider(
+                        scrollController: _scrollController,
                       ),
                     ),
 
