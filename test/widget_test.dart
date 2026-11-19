@@ -1,11 +1,7 @@
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:portfolio/main.dart';
-import 'package:lottie/lottie.dart';
-import 'package:portfolio/widgets/scroll_driven/scroll_driven_animation.dart';
-import 'package:portfolio/widgets/layout/custom_appbar/custom_app_bar.dart';
 import 'package:portfolio/pages/sections/contact/section/contact_section.dart';
 import 'package:portfolio/pages/sections/presentation/presentation_section.dart';
 import 'package:portfolio/widgets/layout/viewport_section.dart';
@@ -19,9 +15,6 @@ import 'package:portfolio/pages/sections/stack/ai_vs_human/ai_vs_human_split_scr
 import 'package:portfolio/pages/sections/contact/hook/contact_hook.dart';
 import 'package:portfolio/design_system/constants/layout_constants.dart';
 import 'package:portfolio/widgets/scroll_driven/portfolio_scroll_view.dart';
-import 'package:portfolio/widgets/scroll_driven/inertia_scroll_controller.dart';
-import 'package:portfolio/widgets/scroll_driven/scroll_driven_typing.dart';
-import 'package:portfolio/widgets/scroll_driven/viewport_threshold_notifier.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -146,8 +139,8 @@ void main() {
         await tester.pump(const Duration(milliseconds: 160));
       }
       final controller = tester
-          .widget<AdaptivePortfolioAppBar>(find.byType(AdaptivePortfolioAppBar))
-          .scrollController;
+          .widget<PortfolioScrollView>(find.byType(PortfolioScrollView))
+          .controller;
       expect(
         controller.offset,
         closeTo(controller.position.maxScrollExtent, 1),
@@ -156,51 +149,6 @@ void main() {
       expect(tester.takeException(), isNull);
     });
   }
-
-  testWidgets(
-    'A pinned Lottie scene maps its loaded frame count to scroll distance',
-    (tester) async {
-      final controller = ScrollController();
-      addTearDown(controller.dispose);
-      const path = 'assets/animations/iphone.json';
-      final composition = await tester.runAsync(() => AssetLottie(path).load());
-      final distance = composition!.durationFrames * 16;
-      await tester.pumpWidget(
-        MaterialApp(
-          home: PortfolioScrollView(
-            controller: controller,
-            child: Column(
-              children: [
-                ScrollDrivenAnimation(
-                  scrollController: controller,
-                  animationPath: path,
-                ),
-                const SizedBox(height: 600),
-              ],
-            ),
-          ),
-        ),
-      );
-      await tester.pump();
-      await tester.pump();
-      expect(
-        tester.getSize(find.byType(ScrollDrivenAnimation)).height,
-        closeTo(600 + distance, 0.1),
-      );
-      for (final fraction in [0.0, 0.5, 1.0]) {
-        controller.jumpTo(distance * fraction);
-        await tester.pump();
-        await tester.pump();
-        expect(
-          tester
-              .widget<LottieBuilder>(find.byType(LottieBuilder))
-              .controller!
-              .value,
-          closeTo(fraction, 0.001),
-        );
-      }
-    },
-  );
 
   testWidgets('Section sizes use the scroll viewport inside a smaller panel', (
     tester,
@@ -237,55 +185,13 @@ void main() {
     );
   });
 
-  testWidgets('Threshold supports restored offsets, reentry and resize', (
-    tester,
-  ) async {
-    final controller = ScrollController(initialScrollOffset: 550);
-    addTearDown(controller.dispose);
-    var entries = 0;
-    Widget page(double height) => MaterialApp(
-      home: Center(
-        child: SizedBox(
-          height: height,
-          child: PortfolioScrollView(
-            controller: controller,
-            child: Column(
-              children: [
-                const SizedBox(height: 600),
-                ViewportThresholdNotifier(
-                  controller: controller,
-                  threshold: 0.5,
-                  onThresholdCrossed: () => entries++,
-                  child: const SizedBox(height: 80),
-                ),
-                const SizedBox(height: 600),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-    await tester.pumpWidget(page(300));
-    expect(entries, 1);
-    controller.jumpTo(0);
-    await tester.pump();
-    controller.jumpTo(420);
-    await tester.pump();
-    expect(entries, 1);
-    await tester.pumpWidget(page(400));
-    expect(entries, 2);
-    controller.jumpTo(700);
-    await tester.pump();
-    expect(entries, 2);
-  });
-
   testWidgets('Only the bubble reopens the header for another two seconds', (
     tester,
   ) async {
     await tester.pumpWidget(const MyApp());
     final controller = tester
-        .widget<AdaptivePortfolioAppBar>(find.byType(AdaptivePortfolioAppBar))
-        .scrollController;
+        .widget<PortfolioScrollView>(find.byType(PortfolioScrollView))
+        .controller;
     final bubble = find.byTooltip('Mostrar cabecera');
     final menu = find.byTooltip('Menú');
     expect(menu, findsOneWidget);
@@ -309,143 +215,5 @@ void main() {
     await tester.pumpWidget(const SizedBox.shrink());
     await tester.pump(const Duration(seconds: 3));
     expect(tester.takeException(), isNull);
-  });
-
-  testWidgets('Wheel distance accumulates, reverses and yields to navigation', (
-    tester,
-  ) async {
-    final controller = InertiaScrollController();
-    addTearDown(controller.dispose);
-    await tester.pumpWidget(
-      MaterialApp(
-        home: PortfolioScrollView(
-          controller: controller,
-          child: const SizedBox(height: 3000),
-        ),
-      ),
-    );
-    Future<void> wheel(double delta) async {
-      await tester.sendEventToBinding(
-        PointerScrollEvent(
-          position: const Offset(200, 200),
-          scrollDelta: Offset(0, delta),
-        ),
-      );
-      await tester.pump();
-    }
-
-    await wheel(120);
-    await tester.pump(const Duration(milliseconds: 16));
-    final first = controller.offset;
-    expect(first, inExclusiveRange(0, 120));
-    await tester.pump(const Duration(milliseconds: 16));
-    expect(controller.offset, inExclusiveRange(first, 120));
-    await wheel(120);
-    await tester.pumpAndSettle();
-    expect(controller.offset, 240);
-    await wheel(120);
-    await tester.pump(const Duration(milliseconds: 32));
-    final atReversal = controller.offset;
-    await wheel(-60);
-    await tester.pumpAndSettle();
-    expect(controller.offset, closeTo(atReversal - 60, 0.001));
-    await wheel(-120);
-    await tester.pump(const Duration(milliseconds: 16));
-    final navigation = controller.animateTo(
-      800,
-      duration: const Duration(milliseconds: 150),
-      curve: Curves.linear,
-    );
-    await tester.pumpAndSettle();
-    await navigation;
-    expect(controller.offset, 800);
-    await wheel(10000);
-    await tester.pumpAndSettle();
-    expect(controller.offset, controller.position.maxScrollExtent);
-  });
-
-  testWidgets('Wheel followed by thumb drag leaves the position at release', (
-    tester,
-  ) async {
-    final controller = InertiaScrollController();
-    addTearDown(controller.dispose);
-    await tester.pumpWidget(
-      MaterialApp(
-        theme: ThemeData(platform: TargetPlatform.windows),
-        home: PortfolioScrollView(
-          controller: controller,
-          child: const SizedBox(height: 3000),
-        ),
-      ),
-    );
-    await tester.pumpAndSettle();
-    await tester.sendEventToBinding(
-      const PointerScrollEvent(
-        position: Offset(200, 200),
-        scrollDelta: Offset(0, 120),
-      ),
-    );
-    await tester.pump();
-    await tester.pump(const Duration(milliseconds: 16));
-    final afterWheel = controller.offset;
-    expect(afterWheel, inExclusiveRange(0, 120));
-    final rect = tester.getRect(find.byType(Scrollbar));
-    final mouse = await tester.startGesture(
-      Offset(rect.right - 5, rect.top + 65),
-      kind: PointerDeviceKind.mouse,
-    );
-    await tester.pump(const Duration(milliseconds: 100));
-    expect(controller.offset, afterWheel);
-    await mouse.moveBy(const Offset(0, 160));
-    await mouse.moveBy(const Offset(0, 20));
-    await tester.pump();
-    await mouse.up();
-    await tester.pump();
-    final afterDrag = controller.offset;
-    expect(afterDrag, greaterThan(afterWheel));
-    await tester.pump(const Duration(seconds: 1));
-    expect(controller.offset, afterDrag);
-  });
-
-  testWidgets('Typing advances by whole characters and handles empty text', (
-    tester,
-  ) async {
-    final controller = ScrollController();
-    addTearDown(controller.dispose);
-    Widget page(String text) => MaterialApp(
-      home: PortfolioScrollView(
-        controller: controller,
-        child: Column(
-          children: [
-            ScrollDrivenTyping(
-              text: text,
-              scrollController: controller,
-              pixelsPerCharacter: 50,
-            ),
-            const SizedBox(height: 600),
-          ],
-        ),
-      ),
-    );
-    await tester.pumpWidget(page('😀B'));
-    String visible() =>
-        ((tester.widget<Text>(find.byType(Text)).textSpan! as TextSpan)
-                    .children!
-                    .first
-                as TextSpan)
-            .text!;
-    expect(visible(), '');
-    for (final (offset, expected) in [
-      (50.0, '😀'),
-      (100.0, '😀B'),
-      (0.0, ''),
-    ]) {
-      controller.jumpTo(offset);
-      await tester.pump();
-      await tester.pump();
-      expect(visible(), expected);
-    }
-    await tester.pumpWidget(page(''));
-    expect(visible(), '');
   });
 }

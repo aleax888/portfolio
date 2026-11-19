@@ -41,7 +41,6 @@ class ContactSection extends StatelessWidget {
             children: [
               if (!shortLandscape) title,
               SplitView(
-                breakpoint: LayoutConstants.splitWidth,
                 left: shortLandscape
                     ? Column(
                         crossAxisAlignment: CrossAxisAlignment.start,

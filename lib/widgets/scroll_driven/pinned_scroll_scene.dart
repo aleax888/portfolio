@@ -1,6 +1,5 @@
 import 'package:flutter/widgets.dart';
-import 'package:portfolio/widgets/layout/section_viewport.dart';
-import 'package:portfolio/widgets/scroll_driven/viewport_observer.dart';
+import 'package:portfolio/widgets/scroll_driven/scroll_geometry.dart';
 
 /// Pins one viewport of content for the specified logical scroll distance.
 class PinnedScrollScene extends StatefulWidget {
@@ -21,16 +20,22 @@ class PinnedScrollScene extends StatefulWidget {
 
 class _PinnedScrollSceneState extends State<PinnedScrollScene> {
   double _travel = 0;
+  double? _height;
 
   @override
   Widget build(BuildContext context) {
-    final height = SectionViewport.sizeOf(context).height;
+    final height = _height ?? MediaQuery.sizeOf(context).height;
     final travel = _travel.clamp(0.0, widget.distance);
-    return ViewportObserver(
+    return ScrollGeometry(
       controller: widget.controller,
-      onPosition: (top, _) {
+      onPosition: (top, position) {
         final travel = (-top).clamp(0.0, widget.distance);
-        if (_travel != travel) setState(() => _travel = travel);
+        if (_travel != travel || _height != position.viewportDimension) {
+          setState(() {
+            _travel = travel;
+            _height = position.viewportDimension;
+          });
+        }
       },
       child: SizedBox(
         height: height + widget.distance,

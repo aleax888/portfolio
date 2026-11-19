@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:portfolio/design_system/constants/color_constants.dart';
 import 'package:portfolio/design_system/constants/text_constants.dart';
+import 'package:portfolio/design_system/extensions/context_extensions.dart';
+import 'package:portfolio/design_system/utils/responsive_font_size.dart';
 import 'package:portfolio/widgets/animation/animated_translation.dart';
 
 class NameWidget extends StatelessWidget {
@@ -10,30 +12,29 @@ class NameWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return AnimatedTranslation(
       origin: .fromLeft,
-      child: Text.rich(
-        TextSpan(
-          style: TextStyle(wordSpacing: 10),
-          children: [
-            TextSpan(
-              text: "--- ALEX MAGLIO ",
-              style: TextStyle(
-                wordSpacing: 10,
-                fontFamily: TextFamilyConstants.secondary,
-                color: ColorPaletteConstants.quinary,
-                fontSize: TextSizeConstants.m,
-                fontWeight: TextWeightConstants.medium,
+      child: FittedBox(
+        child: Text.rich(
+          TextSpan(
+            style: TextStyle(
+              wordSpacing: ResponsiveFontSize.linear(10, context.viewportSize),
+              color: ColorPaletteConstants.quinary,
+              fontSize: ResponsiveFontSize.logarithmic(
+                30,
+                context.viewportSize,
               ),
+              fontFamily: TextFamilyConstants.secondary,
             ),
-            TextSpan(
-              text: "NEYRA HERRADA",
-              style: TextStyle(
-                fontFamily: TextFamilyConstants.secondary,
-                color: ColorPaletteConstants.quinary,
-                fontSize: TextSizeConstants.m,
-                fontWeight: TextWeightConstants.bold,
+            children: [
+              TextSpan(
+                text: "--- ALEX MAGLIO ",
+                style: TextStyle(fontWeight: TextWeightConstants.medium),
               ),
-            ),
-          ],
+              TextSpan(
+                text: "NEYRA HERRADA",
+                style: TextStyle(fontWeight: TextWeightConstants.bold),
+              ),
+            ],
+          ),
         ),
       ),
     );

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import 'package:portfolio/design_system/constants/layout_constants.dart';
 import 'package:portfolio/design_system/constants/spacing_constants.dart';
 import 'package:portfolio/domain/experience/experience_enum.dart';
 import 'package:portfolio/pages/sections/experience/section/widgets/experience_data_panel.dart';
@@ -29,7 +28,6 @@ class ExperienceSection extends StatelessWidget {
           SplitView(
             split: 0.7,
             gap: SpacingConstants.xxl,
-            breakpoint: LayoutConstants.wideSplitWidth,
             left: Column(
               spacing: SpacingConstants.m,
               mainAxisAlignment: .center,

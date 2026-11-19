@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:portfolio/widgets/scroll_driven/viewport_observer.dart';
+import 'package:portfolio/widgets/scroll_driven/scroll_geometry.dart';
 
 enum SliderDirection { toRight, toLeft }
 
@@ -38,77 +38,66 @@ class ScrollDrivenSlider extends StatefulWidget {
 }
 
 class _ScrollDrivenSliderState extends State<ScrollDrivenSlider> {
-  final _innerController = ScrollController();
-
-  void _syncSlider(double top, ScrollPosition position) {
-    if (!_innerController.hasClients || position.viewportDimension <= 0) return;
-    final progress =
-        ((position.viewportDimension - top) /
-                (position.viewportDimension * widget.threshold))
-            .clamp(0.0, 1.0);
-    final maxScroll = _innerController.position.maxScrollExtent;
-    final rawOffset = progress * maxScroll;
-
-    // Aplica offset inicial y dirección
-    final offsetPixels = widget.offset * maxScroll;
-    final target = widget.direction == SliderDirection.toLeft
-        ? (rawOffset + offsetPixels).clamp(0.0, maxScroll)
-        : (maxScroll - rawOffset - offsetPixels).clamp(0.0, maxScroll);
-
-    if (_innerController.offset != target) _innerController.jumpTo(target);
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final width = constraints.maxWidth;
+        final gaps = widget.items.isEmpty ? 0 : widget.items.length - 1;
+        final travel =
+            width +
+            widget.items.length * widget.itemSize +
+            gaps * widget.itemSpacing;
+        return ScrollGeometry(
+          controller: widget.scrollController,
+          onPosition: (top, position) {
+            final span = position.viewportDimension * widget.threshold;
+            if (span <= 0) return;
+            _progress.value = ((position.viewportDimension - top) / span).clamp(
+              0.0,
+              1.0,
+            );
+          },
+          child: SizedBox(
+            height: widget.itemSize,
+            width: width,
+            child: ValueListenableBuilder<double>(
+              valueListenable: _progress,
+              builder: (context, progress, row) {
+                final fraction = (progress + widget.offset).clamp(0.0, 1.0);
+                final distance = widget.direction == SliderDirection.toLeft
+                    ? fraction
+                    : 1 - fraction;
+                return Stack(
+                  children: [
+                    Positioned(
+                      left: width - travel * distance,
+                      top: 0,
+                      child: row!,
+                    ),
+                  ],
+                );
+              },
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                spacing: widget.itemSpacing,
+                children: [
+                  for (final item in widget.items)
+                    SizedBox.square(dimension: widget.itemSize, child: item),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
   }
+
+  final _progress = ValueNotifier<double>(0);
 
   @override
   void dispose() {
-    _innerController.dispose();
+    _progress.dispose();
     super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return ViewportObserver(
-      controller: widget.scrollController,
-      onPosition: _syncSlider,
-      child: LayoutBuilder(
-        builder: (context, constraints) {
-          final screenWidth = constraints.maxWidth;
-          return SizedBox(
-            height: widget.itemSize,
-            child: ScrollConfiguration(
-              // Deshabilita el scroll manual del usuario
-              behavior: const ScrollBehavior().copyWith(scrollbars: false),
-              child: SingleChildScrollView(
-                controller: _innerController,
-                scrollDirection: Axis.horizontal,
-                physics: const NeverScrollableScrollPhysics(),
-                child: Row(
-                  children: [
-                    // Padding fantasma izquierdo para efecto de aparición
-                    SizedBox(width: screenWidth),
-                    ...List.generate(
-                      widget.items.length,
-                      (i) => Padding(
-                        padding: EdgeInsets.only(
-                          right: i < widget.items.length - 1
-                              ? widget.itemSpacing
-                              : 0,
-                        ),
-                        child: SizedBox(
-                          width: widget.itemSize,
-                          height: widget.itemSize,
-                          child: widget.items[i],
-                        ),
-                      ),
-                    ),
-                    // Padding fantasma derecho para efecto de desaparición
-                    SizedBox(width: screenWidth),
-                  ],
-                ),
-              ),
-            ),
-          );
-        },
-      ),
-    );
   }
 }

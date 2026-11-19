@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:portfolio/design_system/constants/layout_constants.dart';
 import 'package:portfolio/design_system/constants/spacing_constants.dart';
+import 'package:portfolio/design_system/extensions/context_extensions.dart';
 
 /// Un widget que divide el espacio disponible entre dos hijos [left] y [right].
 ///
@@ -10,9 +10,7 @@ import 'package:portfolio/design_system/constants/spacing_constants.dart';
 /// - [split]       : Proporción que ocupa [left], valor entre 0.0 y 1.0.
 ///                   Por defecto 0.5 (50/50).
 /// - [gap]         : Espacio entre ambos widgets, en puntos lógicos. Usa el espaciado del sistema de diseño.
-/// - [breakpoint]  : Ancho mínimo en píxeles lógicos para mostrar layout en fila.
-///                   Por debajo de este valor, los widgets se apilan verticalmente
-///                   y cada uno ocupa el 100% del ancho.
+/// Apila los hijos si la pantalla es más alta que ancha.
 class SplitView extends StatelessWidget {
   const SplitView({
     super.key,
@@ -20,7 +18,7 @@ class SplitView extends StatelessWidget {
     required this.right,
     this.split = 0.5,
     this.gap = SpacingConstants.s,
-    this.breakpoint = LayoutConstants.splitWidth,
+    this.expandBottom = false,
   }) : assert(split >= 0.0 && split <= 1.0, 'split debe estar entre 0.0 y 1.0');
 
   final Widget left;
@@ -33,21 +31,16 @@ class SplitView extends StatelessWidget {
   /// Espacio en píxeles lógicos entre [left] y [right].
   final double gap;
 
-  /// Umbral de ancho en píxeles lógicos. Por debajo → layout en columna.
-  final double breakpoint;
+  /// En columna, asigna al segundo hijo la altura restante si está acotada.
+  final bool expandBottom;
 
   @override
   Widget build(BuildContext context) {
+    final screen = context.viewportSize;
     return LayoutBuilder(
-      builder: (context, constraints) {
-        final isNarrow = constraints.maxWidth < breakpoint;
-
-        if (isNarrow) {
-          return _buildColumn();
-        }
-
-        return _buildRow(constraints.maxWidth);
-      },
+      builder: (context, constraints) => screen.height > screen.width
+          ? _buildColumn(expandBottom && constraints.hasBoundedHeight)
+          : _buildRow(constraints.maxWidth),
     );
   }
 
@@ -59,21 +52,24 @@ class SplitView extends StatelessWidget {
     final rightWidth = availableWidth * (1 - split);
 
     return Row(
+      spacing: gap,
       children: [
         SizedBox(width: leftWidth, child: left),
-        SizedBox(width: gap),
         SizedBox(width: rightWidth, child: right),
       ],
     );
   }
 
   /// Layout vertical: ambos ocupan el 100% del ancho disponible.
-  Widget _buildColumn() {
+  Widget _buildColumn(bool fillRemainingHeight) {
     return Column(
       spacing: gap,
       crossAxisAlignment: .stretch,
       mainAxisSize: MainAxisSize.min,
-      children: [left, right],
+      children: [
+        left,
+        if (fillRemainingHeight) Expanded(child: right) else right,
+      ],
     );
   }
 }

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:portfolio/design_system/constants/text_constants.dart';
+import 'package:portfolio/design_system/extensions/context_extensions.dart';
+import 'package:portfolio/design_system/utils/responsive_font_size.dart';
 import 'package:portfolio/widgets/animation/animated_translation.dart';
 
 class MessageWidget extends StatelessWidget {
@@ -13,9 +15,9 @@ class MessageWidget extends StatelessWidget {
         "Arequipa, Perú (UTC-5)",
         style: TextStyle(
           height: 0.8,
-          fontFamily:  TextFamilyConstants.primary,
-          color: TextColorConstants.light,
-          fontSize: TextSizeConstants.m,
+          color: TextColorConstants.gray,
+          fontSize: ResponsiveFontSize.logarithmic(50, context.viewportSize),
+          fontFamily: TextFamilyConstants.primary,
           fontWeight: TextWeightConstants.regular,
         ),
       ),

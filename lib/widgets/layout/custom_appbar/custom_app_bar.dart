@@ -7,7 +7,6 @@ import 'package:portfolio/design_system/constants/motion_constants.dart';
 import 'package:portfolio/design_system/constants/color_constants.dart';
 import 'package:portfolio/design_system/constants/spacing_constants.dart';
 import 'package:portfolio/design_system/constants/text_constants.dart';
-import 'package:portfolio/widgets/layout/custom_appbar/scroll_aware_appbar_controller.dart';
 import 'package:portfolio/widgets/layout/custom_container.dart';
 
 enum _AppBarLayoutType { web, compact }
@@ -15,7 +14,7 @@ enum _AppBarLayoutType { web, compact }
 class AdaptivePortfolioAppBar extends StatefulWidget {
   const AdaptivePortfolioAppBar({
     super.key,
-    required this.scrollController,
+
     required this.navItems,
     this.leading,
     this.height = defaultHeight,
@@ -24,7 +23,6 @@ class AdaptivePortfolioAppBar extends StatefulWidget {
     this.elevation = 4,
   });
 
-  final ScrollController scrollController;
   final List<PortfolioNavItem> navItems;
   final Widget? leading;
   static const double defaultHeight = LayoutConstants.headerHeight;
@@ -39,35 +37,14 @@ class AdaptivePortfolioAppBar extends StatefulWidget {
 }
 
 class _AdaptivePortfolioAppBarState extends State<AdaptivePortfolioAppBar> {
-  late ScrollAwareAppBarController _sections;
+  PortfolioNavItem? _selected;
   late Timer _hideTimer;
   bool _showHeader = true;
 
   @override
   void initState() {
     super.initState();
-    _trackSections();
     _startHideTimer();
-  }
-
-  void _trackSections() {
-    _sections = ScrollAwareAppBarController(
-      scrollController: widget.scrollController,
-      navItems: widget.navItems,
-    );
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted) _sections.recomputeActiveItem();
-    });
-  }
-
-  @override
-  void didUpdateWidget(AdaptivePortfolioAppBar oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (oldWidget.scrollController != widget.scrollController ||
-        oldWidget.navItems != widget.navItems) {
-      _sections.dispose();
-      _trackSections();
-    }
   }
 
   void _startHideTimer() {
@@ -85,13 +62,13 @@ class _AdaptivePortfolioAppBarState extends State<AdaptivePortfolioAppBar> {
   @override
   void dispose() {
     _hideTimer.cancel();
-    _sections.dispose();
     super.dispose();
   }
 
   void _navigateTo(PortfolioNavItem item) {
     final target = item.sectionKey.currentContext;
     if (target != null) {
+      setState(() => _selected = item);
       Scrollable.ensureVisible(
         target,
         duration: MotionConstants.navigationDuration,
@@ -138,10 +115,7 @@ class _AdaptivePortfolioAppBarState extends State<AdaptivePortfolioAppBar> {
         final layout = constraints.maxWidth < widget.webBreakpoint * textScale
             ? _AppBarLayoutType.compact
             : _AppBarLayoutType.web;
-        return AnimatedBuilder(
-          animation: _sections,
-          builder: (context, _) => _buildBar(context, layout),
-        );
+        return _buildBar(context, layout);
       },
     );
   }
@@ -170,7 +144,7 @@ class _AdaptivePortfolioAppBarState extends State<AdaptivePortfolioAppBar> {
                 if (layoutType == _AppBarLayoutType.web)
                   _WebNavOptions(
                     items: widget.navItems,
-                    activeItem: _sections.activeItem,
+                    activeItem: _selected,
                     onTap: _navigateTo,
                   )
                 else
@@ -199,7 +173,7 @@ class _AdaptivePortfolioAppBarState extends State<AdaptivePortfolioAppBar> {
           alignment: Alignment.centerRight,
           child: _SideMenu(
             items: widget.navItems,
-            activeItem: _sections.activeItem,
+            activeItem: _selected,
             onTap: (item) => Navigator.of(context).pop(item),
           ),
         );

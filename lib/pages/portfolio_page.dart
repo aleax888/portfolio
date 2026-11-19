@@ -16,7 +16,6 @@ import 'package:portfolio/widgets/layout/custom_appbar/custom_app_bar.dart';
 import 'package:portfolio/widgets/layout/custom_constrain.dart';
 import 'package:portfolio/widgets/layout/viewport_section.dart';
 import 'package:portfolio/widgets/scroll_driven/portfolio_scroll_view.dart';
-import 'package:portfolio/widgets/scroll_driven/inertia_scroll_controller.dart';
 
 class PortfolioPage extends StatefulWidget {
   const PortfolioPage({super.key});
@@ -27,7 +26,7 @@ class PortfolioPage extends StatefulWidget {
 
 class _PortfolioPageState extends State<PortfolioPage> {
   // Scroll Controller -------------------------------------------------------
-  final _scrollController = InertiaScrollController();
+  final _scrollController = ScrollController();
 
   // Section Keys -------------------------------------------------------
   final _presentationKey = GlobalKey();
@@ -91,6 +90,7 @@ class _PortfolioPageState extends State<PortfolioPage> {
                     GrowingViewportSection(
                       key: _techStackKey,
                       child: Column(
+                        spacing: SpacingConstants.m,
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           TechStackSlider(scrollController: _scrollController),
@@ -131,8 +131,12 @@ class _PortfolioPageState extends State<PortfolioPage> {
                     // Contact (Section) -------------------------------------------------------
                     ViewportSection(
                       key: _contactKey,
-                      child: ContactSection(
-                        scrollController: _scrollController,
+                      child: Center(
+                        child: CustomConstrain(
+                          child: ContactSection(
+                            scrollController: _scrollController,
+                          ),
+                        ),
                       ),
                     ),
                   ],
@@ -147,7 +151,6 @@ class _PortfolioPageState extends State<PortfolioPage> {
             child: Padding(
               padding: const EdgeInsets.only(right: SpacingConstants.xs),
               child: AdaptivePortfolioAppBar(
-                scrollController: _scrollController,
                 navItems: _navItems,
                 leading: Logo(),
               ),

@@ -3,7 +3,6 @@ import 'dart:ui';
 import 'package:portfolio/design_system/constants/color_constants.dart';
 
 class TextSizeConstants {
-  static const double heroMax = 200;
   static const double contactHeadlineMax = 150;
   static const double sectionNumberMax = 120;
 
@@ -36,6 +35,7 @@ class TextWeightConstants {
 class TextColorConstants {
   static const Color light = BasicColorConstants.white;
   static const Color dark = BasicColorConstants.black;
+  static const Color gray = BasicColorConstants.gray;
 }
 
 class TextFamilyConstants {

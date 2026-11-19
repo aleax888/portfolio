@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:portfolio/design_system/constants/motion_constants.dart';
-import 'package:portfolio/widgets/scroll_driven/viewport_threshold_notifier.dart';
+import 'package:portfolio/widgets/scroll_driven/scroll_geometry.dart';
 
 class ScrollReveal extends StatefulWidget {
   final ScrollController scrollController;
@@ -18,7 +18,7 @@ class ScrollReveal extends StatefulWidget {
     this.threshold = 0.5,
     this.slideBegin = const Offset(0, 0.06),
     this.curve = Curves.easeOut,
-  });
+  }) : assert(threshold > 0 && threshold <= 1);
 
   @override
   State<ScrollReveal> createState() => _ScrollRevealState();
@@ -57,10 +57,16 @@ class _ScrollRevealState extends State<ScrollReveal>
 
   @override
   Widget build(BuildContext context) {
-    return ViewportThresholdNotifier(
+    return ScrollGeometry(
       controller: widget.scrollController,
-      threshold: widget.threshold,
-      onThresholdCrossed: _onThresholdCrossed,
+      onPosition: (top, position) {
+        final atEnd = position.pixels >= position.maxScrollExtent;
+        if (top <=
+                position.viewportDimension * (atEnd ? 1 : widget.threshold) &&
+            _controller.isDismissed) {
+          _onThresholdCrossed();
+        }
+      },
       child: SlideTransition(
         position: _slide,
         child: FadeTransition(opacity: _fade, child: widget.child),
