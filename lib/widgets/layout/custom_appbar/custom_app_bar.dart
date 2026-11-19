@@ -1,8 +1,12 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+
+import 'package:portfolio/design_system/constants/layout_constants.dart';
+import 'package:portfolio/design_system/constants/motion_constants.dart';
 import 'package:portfolio/design_system/constants/color_constants.dart';
 import 'package:portfolio/design_system/constants/spacing_constants.dart';
 import 'package:portfolio/design_system/constants/text_constants.dart';
-import 'package:portfolio/widgets/animation/pressable_widget.dart';
 import 'package:portfolio/widgets/layout/custom_appbar/scroll_aware_appbar_controller.dart';
 import 'package:portfolio/widgets/layout/custom_container.dart';
 
@@ -14,8 +18,8 @@ class AdaptivePortfolioAppBar extends StatefulWidget {
     required this.scrollController,
     required this.navItems,
     this.leading,
-    this.height = 72,
-    this.webBreakpoint = 900,
+    this.height = defaultHeight,
+    this.webBreakpoint = LayoutConstants.navigationWidth,
     this.backgroundColor,
     this.elevation = 4,
   });
@@ -23,6 +27,7 @@ class AdaptivePortfolioAppBar extends StatefulWidget {
   final ScrollController scrollController;
   final List<PortfolioNavItem> navItems;
   final Widget? leading;
+  static const double defaultHeight = LayoutConstants.headerHeight;
   final double height;
   final double webBreakpoint;
   final Color? backgroundColor;
@@ -33,72 +38,109 @@ class AdaptivePortfolioAppBar extends StatefulWidget {
       _AdaptivePortfolioAppBarState();
 }
 
-class _AdaptivePortfolioAppBarState extends State<AdaptivePortfolioAppBar>
-    with SingleTickerProviderStateMixin {
-  late final ScrollAwareAppBarController _visibilityController;
+class _AdaptivePortfolioAppBarState extends State<AdaptivePortfolioAppBar> {
+  late ScrollAwareAppBarController _sections;
+  late Timer _hideTimer;
+  bool _showHeader = true;
 
   @override
   void initState() {
     super.initState();
-    _visibilityController = ScrollAwareAppBarController(
-      scrollController: widget.scrollController,
-      navItems: widget.navItems, // <-- nuevo
-    );
+    _trackSections();
+    _startHideTimer();
+  }
 
-    // Esperamos a que las secciones estén montadas para hacer
-    // el primer cálculo de sección activa.
+  void _trackSections() {
+    _sections = ScrollAwareAppBarController(
+      scrollController: widget.scrollController,
+      navItems: widget.navItems,
+    );
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _visibilityController.recomputeActiveItem();
+      if (mounted) _sections.recomputeActiveItem();
     });
   }
 
   @override
+  void didUpdateWidget(AdaptivePortfolioAppBar oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.scrollController != widget.scrollController ||
+        oldWidget.navItems != widget.navItems) {
+      _sections.dispose();
+      _trackSections();
+    }
+  }
+
+  void _startHideTimer() {
+    _hideTimer = Timer(MotionConstants.headerVisibleDuration, () {
+      setState(() => _showHeader = false);
+    });
+  }
+
+  void _openHeader() {
+    _hideTimer.cancel();
+    setState(() => _showHeader = true);
+    _startHideTimer();
+  }
+
+  @override
   void dispose() {
-    _visibilityController.dispose();
+    _hideTimer.cancel();
+    _sections.dispose();
     super.dispose();
   }
 
-  Future<void> _navigateTo(PortfolioNavItem item) async {
-    final ctx = item.sectionKey.currentContext;
-    if (ctx == null) return;
-
-    _visibilityController.setProgrammaticScroll(true);
-
-    // Cierra el drawer si está abierto (mobile/tablet).
-    if (Navigator.of(context).canPop()) {
-      Navigator.of(context).pop();
+  void _navigateTo(PortfolioNavItem item) {
+    final target = item.sectionKey.currentContext;
+    if (target != null) {
+      Scrollable.ensureVisible(
+        target,
+        duration: MotionConstants.navigationDuration,
+        curve: Curves.easeInOutCubic,
+      );
     }
-
-    await Scrollable.ensureVisible(
-      ctx,
-      duration: const Duration(milliseconds: 500),
-      curve: Curves.easeInOutCubic,
-      alignment: 0.0,
-    );
-
-    _visibilityController.setProgrammaticScroll(false);
   }
-
-  bool _isCompact(double width) => width < widget.webBreakpoint;
 
   @override
   Widget build(BuildContext context) {
+    if (!_showHeader) {
+      return SafeArea(
+        bottom: false,
+        child: Align(
+          alignment: Alignment.topRight,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: SpacingConstants.s,
+              vertical: SpacingConstants.xs,
+            ),
+            child: Material(
+              shape: const CircleBorder(),
+              color: Theme.of(context).colorScheme.surface,
+              elevation: widget.elevation,
+              child: IconButton(
+                tooltip: 'Mostrar cabecera',
+                constraints: const BoxConstraints.tightFor(
+                  width: LayoutConstants.touchTarget,
+                  height: LayoutConstants.touchTarget,
+                ),
+                icon: const Icon(Icons.menu),
+                onPressed: _openHeader,
+              ),
+            ),
+          ),
+        ),
+      );
+    }
     return LayoutBuilder(
       builder: (context, constraints) {
-        final compact = _isCompact(constraints.maxWidth);
-        final layoutType = compact
+        final textScale =
+            MediaQuery.textScalerOf(context).scale(TextSizeConstants.s) /
+            TextSizeConstants.s;
+        final layout = constraints.maxWidth < widget.webBreakpoint * textScale
             ? _AppBarLayoutType.compact
             : _AppBarLayoutType.web;
-
         return AnimatedBuilder(
-          animation: _visibilityController,
-          builder: (context, _) {
-            return _AnimatedHideableAppBar(
-              isVisible: _visibilityController.isVisible,
-              height: widget.height,
-              child: _buildBar(context, layoutType),
-            );
-          },
+          animation: _sections,
+          builder: (context, _) => _buildBar(context, layout),
         );
       },
     );
@@ -106,22 +148,29 @@ class _AdaptivePortfolioAppBarState extends State<AdaptivePortfolioAppBar>
 
   Widget _buildBar(BuildContext context, _AppBarLayoutType layoutType) {
     return Material(
-      color: Colors.transparent,
+      color: widget.backgroundColor ?? Colors.transparent,
       elevation: widget.elevation,
       child: SizedBox(
         height: widget.height,
         child: SafeArea(
           bottom: false,
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
+            padding: const EdgeInsets.symmetric(horizontal: SpacingConstants.s),
             child: Row(
               children: [
-                if (widget.leading != null) widget.leading!,
-                const Spacer(),
+                Expanded(
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: widget.leading,
+                    ),
+                  ),
+                ),
                 if (layoutType == _AppBarLayoutType.web)
                   _WebNavOptions(
                     items: widget.navItems,
-                    activeItem: _visibilityController.activeItem, // <-- nuevo
+                    activeItem: _sections.activeItem,
                     onTap: _navigateTo,
                   )
                 else
@@ -138,8 +187,8 @@ class _AdaptivePortfolioAppBarState extends State<AdaptivePortfolioAppBar>
     );
   }
 
-  void _openSideMenu(BuildContext context) {
-    showGeneralDialog(
+  Future<void> _openSideMenu(BuildContext context) async {
+    final selected = await showGeneralDialog<PortfolioNavItem>(
       context: context,
       barrierDismissible: true,
       barrierLabel: 'Menú',
@@ -148,16 +197,10 @@ class _AdaptivePortfolioAppBarState extends State<AdaptivePortfolioAppBar>
       pageBuilder: (context, anim1, anim2) {
         return Align(
           alignment: Alignment.centerRight,
-          child: AnimatedBuilder(
-            animation: _visibilityController,
-            builder: (context, _) => _SideMenu(
-              items: widget.navItems,
-              activeItem: _visibilityController.activeItem,
-              onTap: (item) {
-                Navigator.of(context).pop();
-                _navigateTo(item);
-              },
-            ),
+          child: _SideMenu(
+            items: widget.navItems,
+            activeItem: _sections.activeItem,
+            onTap: (item) => Navigator.of(context).pop(item),
           ),
         );
       },
@@ -175,6 +218,7 @@ class _AdaptivePortfolioAppBarState extends State<AdaptivePortfolioAppBar>
         );
       },
     );
+    if (mounted && selected != null) _navigateTo(selected);
   }
 }
 
@@ -189,46 +233,6 @@ class PortfolioNavItem {
   final String label;
   final GlobalKey sectionKey;
   final IconData? icon;
-}
-
-/// Colapsa la altura real del AppBar a 0 cuando está oculto (no solo
-/// lo desplaza), para que no quede un espacio vacío reservado.
-class _AnimatedHideableAppBar extends StatelessWidget {
-  const _AnimatedHideableAppBar({
-    required this.isVisible,
-    required this.height,
-    required this.child,
-  });
-
-  final bool isVisible;
-  final double height;
-  final Widget child;
-
-  @override
-  Widget build(BuildContext context) {
-    return ClipRect(
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 280),
-        curve: Curves.easeInOutCubic,
-        height: isVisible ? height : 0,
-        child: OverflowBox(
-          minHeight: 0,
-          maxHeight: height,
-          alignment: Alignment.topCenter,
-          child: AnimatedSlide(
-            duration: const Duration(milliseconds: 280),
-            curve: Curves.easeInOutCubic,
-            offset: isVisible ? Offset.zero : const Offset(0, -1),
-            child: AnimatedOpacity(
-              duration: const Duration(milliseconds: 200),
-              opacity: isVisible ? 1 : 0,
-              child: child,
-            ),
-          ),
-        ),
-      ),
-    );
-  }
 }
 
 class _WebNavOptions extends StatelessWidget {
@@ -251,7 +255,9 @@ class _WebNavOptions extends StatelessWidget {
       children: [
         for (final item in items)
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 4),
+            padding: const EdgeInsets.symmetric(
+              horizontal: SpacingConstants.xxs,
+            ),
             child: _NavOptionButton(
               item: item,
               isActive: item == activeItem,
@@ -276,7 +282,7 @@ class _NavOptionButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return PressableWidget(
+    return InkWell(
       onTap: onTap,
       child: CustomContainer(
         padding: EdgeInsetsGeometry.symmetric(
@@ -315,10 +321,10 @@ class _SideMenu extends StatelessWidget {
       color: colorScheme.surface,
       child: SafeArea(
         child: SizedBox(
-          width: 280,
+          width: LayoutConstants.menuWidth,
           height: double.infinity,
           child: ListView(
-            padding: const EdgeInsets.symmetric(vertical: 24),
+            padding: const EdgeInsets.symmetric(vertical: SpacingConstants.m),
             children: [
               for (final item in items)
                 ListTile(

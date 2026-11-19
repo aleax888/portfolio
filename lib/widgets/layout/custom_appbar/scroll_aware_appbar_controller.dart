@@ -5,59 +5,20 @@ class ScrollAwareAppBarController extends ChangeNotifier {
   ScrollAwareAppBarController({
     required ScrollController scrollController,
     required List<PortfolioNavItem> navItems,
-    this.scrollThreshold = 6.0,
   }) : _scrollController = scrollController,
        _navItems = navItems {
-    _scrollController.addListener(_onScroll);
+    _scrollController.addListener(recomputeActiveItem);
   }
 
   final ScrollController _scrollController;
   final List<PortfolioNavItem> _navItems;
-  final double scrollThreshold;
-
-  bool _isVisible = true;
-  bool get isVisible => _isVisible;
-
-  double _lastOffset = 0;
-  bool _isProgrammaticScroll = false;
-
   PortfolioNavItem? _activeItem;
   PortfolioNavItem? get activeItem => _activeItem;
 
-  void setProgrammaticScroll(bool value) {
-    _isProgrammaticScroll = value;
-    if (value && !_isVisible) {
-      _isVisible = true;
-      notifyListeners();
-    }
-  }
-
-  void _onScroll() {
-    final currentOffset = _scrollController.offset;
-
-    _updateVisibility(currentOffset);
-    _updateActiveItem(currentOffset);
-
-    _lastOffset = currentOffset;
-  }
-
-  void _updateVisibility(double currentOffset) {
-    if (_isProgrammaticScroll) return;
-
-    if (currentOffset <= 0) {
-      _setVisible(true);
-      return;
-    }
-
-    final delta = currentOffset - _lastOffset;
-    if (delta.abs() < scrollThreshold) return;
-
-    _setVisible(delta <= 0);
-  }
-
   /// Determina qué sección está activa según cuál es la última cuyo
   /// borde superior ya cruzó la línea de activación (ej: top + altura del AppBar).
-  void _updateActiveItem(double currentOffset) {
+  void recomputeActiveItem() {
+    if (!_scrollController.hasClients) return;
     final scrollBox =
         _scrollController.position.context.storageContext.findRenderObject()
             as RenderBox?;
@@ -87,7 +48,13 @@ class ScrollAwareAppBarController extends ChangeNotifier {
 
     // Caso borde: si ninguna sección cruzó aún la línea (estamos arriba del todo),
     // activamos la primera por defecto.
-    bestMatch ??= _navItems.isNotEmpty ? _navItems.first : null;
+    final position = _scrollController.position;
+    if (_navItems.isNotEmpty &&
+        position.maxScrollExtent > 0 &&
+        position.pixels >= position.maxScrollExtent) {
+      bestMatch = _navItems.last;
+    }
+    bestMatch ??= _navItems.firstOrNull;
 
     if (bestMatch != _activeItem) {
       _activeItem = bestMatch;
@@ -95,28 +62,11 @@ class ScrollAwareAppBarController extends ChangeNotifier {
     }
   }
 
-  void recomputeActiveItem() {
-    _updateActiveItem(
-      _scrollController.hasClients ? _scrollController.offset : 0,
-    );
-  }
-
-  static const double _activationLine = 80.0;
-
-  /// Margen para decidir "cuándo" una sección se considera activa
-  /// relativo al top del viewport (ej: cuando pasa bajo el AppBar).
-  // static const double _activationOffset = 80.0;
-
-  void _setVisible(bool value) {
-    if (_isVisible != value) {
-      _isVisible = value;
-      notifyListeners();
-    }
-  }
+  static const double _activationLine = 80;
 
   @override
   void dispose() {
-    _scrollController.removeListener(_onScroll);
+    _scrollController.removeListener(recomputeActiveItem);
     super.dispose();
   }
 }

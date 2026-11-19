@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+
+import 'package:portfolio/design_system/constants/layout_constants.dart';
 import 'package:portfolio/design_system/constants/spacing_constants.dart';
 import 'package:portfolio/design_system/constants/text_constants.dart';
 import 'package:portfolio/widgets/animation/pressable_widget.dart';
@@ -50,8 +52,8 @@ class _ContactOptionState extends State<ContactOption> {
       ),
       _AssetIcon(:final path) => Image.asset(
         path,
-        width: 24,
-        height: 24,
+        width: LayoutConstants.iconSize,
+        height: LayoutConstants.iconSize,
         color: TextColorConstants.light,
       ),
     };
@@ -63,21 +65,25 @@ class _ContactOptionState extends State<ContactOption> {
       onTap: widget.onTap,
       child: CustomContainer(
         hoverColor: widget.color,
+        padding: const EdgeInsets.symmetric(
+          horizontal: SpacingConstants.xs,
+          vertical: SpacingConstants.xxs,
+        ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Expanded(
               child: Row(
-                spacing: SpacingConstants.l,
+                spacing: SpacingConstants.xs,
                 children: [
                   _buildIcon(),
                   Expanded(
                     child: Text(
                       widget.text,
-                      overflow: .ellipsis,
+                      softWrap: true,
                       style: TextStyle(
                         color: TextColorConstants.light,
-                        fontSize: TextSizeConstants.m,
+                        fontSize: TextSizeConstants.s,
                         fontWeight: TextWeightConstants.regular,
                       ),
                     ),

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+
+import 'package:portfolio/design_system/constants/spacing_constants.dart';
 import 'package:portfolio/helpers/assets/icon_enum.dart';
 import 'package:portfolio/pages/widgets/contact_option.dart';
 import 'package:portfolio/widgets/animation/animated_translation.dart';
@@ -21,6 +23,7 @@ class ContactButtons extends StatelessWidget {
       origin: .fromRight,
       scrollController: scrollController,
       child: CustomColumn(
+        spacing: SpacingConstants.xs,
         children: [
           ContactOption(
             icon: ContactIcon.icon(Icons.email),

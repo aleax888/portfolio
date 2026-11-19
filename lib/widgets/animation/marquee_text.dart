@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:portfolio/design_system/constants/motion_constants.dart';
 
 // ---------------------------------------------------------------------------
 // WIDGET: MarqueeText
@@ -42,7 +43,7 @@ class MarqueeText extends StatefulWidget {
 
     // --- Animacion ---
     /// Velocidad de desplazamiento en pixels logicos por segundo.
-    this.speedPixelsPerSecond = 80.0,
+    this.speedPixelsPerSecond = MotionConstants.marqueePixelsPerSecond,
 
     /// Pausa antes de que el texto comience a moverse por primera vez.
     this.initialDelay = Duration.zero,
@@ -103,8 +104,8 @@ class _MarqueeTextState extends State<MarqueeText>
   Duration get _loopDuration => _durationForTravel(_loopTravel);
 
   Duration _durationForTravel(double travel) => Duration(
-        milliseconds: (travel / widget.speedPixelsPerSecond * 1000).round(),
-      );
+    milliseconds: (travel / widget.speedPixelsPerSecond * 1000).round(),
+  );
 
   /// Posicion `left` actual del texto.
   ///

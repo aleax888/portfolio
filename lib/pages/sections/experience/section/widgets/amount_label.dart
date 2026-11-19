@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+
+import 'package:portfolio/design_system/extensions/context_extensions.dart';
+import 'package:portfolio/design_system/utils/responsive_font_size.dart';
 import 'package:portfolio/design_system/constants/color_constants.dart';
 import 'package:portfolio/design_system/constants/text_constants.dart';
 
@@ -14,7 +17,7 @@ class AmountLabel extends StatelessWidget {
     this.amountLabel = const TextStyle(
       fontFamily: TextFamilyConstants.primary,
       color: ColorPaletteConstants.tertiary,
-      fontSize: 80,
+      fontSize: TextSizeConstants.statistic,
       fontWeight: TextWeightConstants.black,
     ),
     this.labelStyle = const TextStyle(
@@ -30,7 +33,15 @@ class AmountLabel extends StatelessWidget {
     return Column(
       crossAxisAlignment: .start,
       children: [
-        Text(amount, style: amountLabel),
+        Text(
+          amount,
+          style: amountLabel.copyWith(
+            fontSize: ResponsiveFontSize.logarithmic(
+              amountLabel.fontSize ?? TextSizeConstants.statistic,
+              context.viewportSize,
+            ),
+          ),
+        ),
         Text(label, style: labelStyle),
       ],
     );

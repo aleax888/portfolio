@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+
+import 'package:portfolio/design_system/constants/layout_constants.dart';
 import 'package:portfolio/design_system/constants/spacing_constants.dart';
 import 'package:portfolio/helpers/assets/animation_enum.dart';
 import 'package:portfolio/pages/sections/experience/animation/widgets/android_widget.dart';
@@ -17,20 +19,36 @@ class CrossPlatformAnimation extends StatelessWidget {
       scrollController: scrollController,
       animationPath: AnimationEnum.iPhone.path,
       child: CustomPadding(
-        child: Column(
-          spacing: SpacingConstants.xxl,
-          mainAxisAlignment: .center,
-          children: [
-            Row(
-              mainAxisAlignment: .start,
-              children: [IosWidget(scrollController: scrollController)],
+        child: LayoutBuilder(
+          builder: (context, constraints) => FittedBox(
+            fit: BoxFit.scaleDown,
+            child: SizedBox(
+              width: constraints.maxWidth,
+              child: Column(
+                spacing:
+                    (constraints.maxHeight * LayoutConstants.pageInsetFraction)
+                        .clamp(SpacingConstants.xs, SpacingConstants.xl),
+                mainAxisAlignment: .center,
+                children: [
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: IosWidget(scrollController: scrollController),
+                    ),
+                  ),
+                  CrossPlatformMessage(),
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: AndroidWidget(scrollController: scrollController),
+                    ),
+                  ),
+                ],
+              ),
             ),
-            CrossPlatformMessage(),
-            Row(
-              mainAxisAlignment: .end,
-              children: [AndroidWidget(scrollController: scrollController)],
-            ),
-          ],
+          ),
         ),
       ),
     );

@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import 'package:portfolio/design_system/constants/layout_constants.dart';
+import 'package:portfolio/design_system/constants/motion_constants.dart';
+
 /// Un widget que presenta dos hijos en "solapamiento horizontal animado".
 ///
 /// Ambos hijos siempre ocupan el 100% del ancho disponible, pero cada uno
@@ -26,16 +29,16 @@ class SplitOverlapView extends StatefulWidget {
     required this.rightChild,
     this.initialSplitRatio = 0.5,
     this.hoveredSplitRatio = 1.0,
-    this.animationDuration = const Duration(milliseconds: 600),
+    this.animationDuration = MotionConstants.splitDuration,
     this.animationCurve = Curves.easeInOut,
-  })  : assert(
-          initialSplitRatio > 0.0 && initialSplitRatio < 1.0,
-          'initialSplitRatio debe estar en el rango abierto (0, 1).',
-        ),
-        assert(
-          hoveredSplitRatio > 0.0 && hoveredSplitRatio <= 1.0,
-          'hoveredSplitRatio debe estar en el rango (0, 1].',
-        );
+  }) : assert(
+         initialSplitRatio > 0.0 && initialSplitRatio < 1.0,
+         'initialSplitRatio debe estar en el rango abierto (0, 1).',
+       ),
+       assert(
+         hoveredSplitRatio > 0.0 && hoveredSplitRatio <= 1.0,
+         'hoveredSplitRatio debe estar en el rango (0, 1].',
+       );
 
   /// Hijo que se renderiza a la izquierda (siempre ocupa el 100% del ancho).
   final Widget leftChild;
@@ -78,8 +81,7 @@ class _SplitOverlapViewState extends State<SplitOverlapView>
       _animationFrom + (_animationTo - _animationFrom) * _curvedValue;
 
   /// Valor de la curva aplicada al progreso lineal del controller.
-  double get _curvedValue =>
-      widget.animationCurve.transform(_controller.value);
+  double get _curvedValue => widget.animationCurve.transform(_controller.value);
 
   // ─── Estado del hover ─────────────────────────────────────────────────────
 
@@ -174,7 +176,9 @@ class _SplitOverlapViewState extends State<SplitOverlapView>
           onHover: (event) => _onHover(event, totalWidth),
           onExit: (_) => _onExit(),
           child: SizedBox(
-            height: 500,
+            height: constraints.hasBoundedHeight
+                ? constraints.maxHeight
+                : LayoutConstants.splitPanelHeight,
             width: totalWidth,
             child: Stack(
               children: [

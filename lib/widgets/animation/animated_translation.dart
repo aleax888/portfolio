@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:portfolio/design_system/constants/motion_constants.dart';
 import 'package:portfolio/widgets/scroll_driven/viewport_threshold_notifier.dart';
 
 // ---------------------------------------------------------------------------
@@ -46,7 +47,7 @@ class AnimatedTranslation extends StatefulWidget {
     super.key,
     required this.child,
     required this.origin,
-    this.duration = const Duration(milliseconds: 1000),
+    this.duration = MotionConstants.translationDuration,
     this.delay = Duration.zero,
     this.curve = Curves.easeOut,
     this.distance = 1.5,

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:portfolio/design_system/constants/motion_constants.dart';
 import 'package:portfolio/widgets/scroll_driven/viewport_threshold_notifier.dart';
 
 class ScrollReveal extends StatefulWidget {
@@ -13,7 +14,7 @@ class ScrollReveal extends StatefulWidget {
     super.key,
     required this.child,
     required this.scrollController,
-    this.duration = const Duration(milliseconds: 600),
+    this.duration = MotionConstants.revealDuration,
     this.threshold = 0.5,
     this.slideBegin = const Offset(0, 0.06),
     this.curve = Curves.easeOut,

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+
 import 'package:portfolio/design_system/constants/spacing_constants.dart';
+import 'package:portfolio/widgets/layout/growing_viewport_section.dart';
 import 'package:portfolio/pages/sections/contact/hook/contact_hook.dart';
 import 'package:portfolio/pages/sections/contact/section/contact_section.dart';
 import 'package:portfolio/pages/sections/education/education_section.dart';
@@ -12,7 +14,9 @@ import 'package:portfolio/pages/sections/stack/slider/tech_stack_slider.dart';
 import 'package:portfolio/pages/widgets/logo.dart';
 import 'package:portfolio/widgets/layout/custom_appbar/custom_app_bar.dart';
 import 'package:portfolio/widgets/layout/custom_constrain.dart';
-import 'package:portfolio/widgets/scroll_driven/smooth_scroll_view.dart';
+import 'package:portfolio/widgets/layout/viewport_section.dart';
+import 'package:portfolio/widgets/scroll_driven/portfolio_scroll_view.dart';
+import 'package:portfolio/widgets/scroll_driven/inertia_scroll_controller.dart';
 
 class PortfolioPage extends StatefulWidget {
   const PortfolioPage({super.key});
@@ -22,16 +26,16 @@ class PortfolioPage extends StatefulWidget {
 }
 
 class _PortfolioPageState extends State<PortfolioPage> {
+  // Scroll Controller -------------------------------------------------------
   final _scrollController = InertiaScrollController();
 
-  // Keys de cada sección que querés que sea un "punto de interés"
+  // Section Keys -------------------------------------------------------
   final _presentationKey = GlobalKey();
   final _experienceKey = GlobalKey();
   final _techStackKey = GlobalKey();
   final _projectsKey = GlobalKey();
   final _educationKey = GlobalKey();
   final _contactKey = GlobalKey();
-
   late final List<PortfolioNavItem> _navItems = [
     PortfolioNavItem(label: 'Start', sectionKey: _presentationKey),
     PortfolioNavItem(label: 'Experience', sectionKey: _experienceKey),
@@ -54,55 +58,80 @@ class _PortfolioPageState extends State<PortfolioPage> {
         children: [
           SafeArea(
             child: Center(
-              child: SmoothScrollView(
-                inertiaController: _scrollController,
+              child: PortfolioScrollView(
+                controller: _scrollController,
                 child: Column(
-                  spacing: SpacingConstants.xxl,
                   children: [
-                    // Presentación -------------------------------------------------------
-                    PresentationSection(key: _presentationKey),
+                    // Presenation (Section) -------------------------------------------------------
+                    ViewportSection(
+                      key: _presentationKey,
+                      child: const PresentationSection(),
+                    ),
 
-                    // Experiencia -----------------------------------------------------
-                    CustomConstrain(
-                      child: ExperienceSection(
-                        key: _experienceKey,
-                        scrollController: _scrollController,
+                    // Experience (Section) -------------------------------------------------------
+                    GrowingViewportSection(
+                      key: _experienceKey,
+                      child: Center(
+                        child: CustomConstrain(
+                          child: ExperienceSection(
+                            scrollController: _scrollController,
+                          ),
+                        ),
                       ),
                     ),
+
+                    // Cross Platform (Hook) -------------------------------------------------------
                     CustomConstrain(
                       child: CrossPlatformAnimation(
                         scrollController: _scrollController,
                       ),
                     ),
 
-                    // Stack tecnológico --------------------------------------------------
-                    TechStackSlider(
+                    // Tech Stack (Section) -------------------------------------------------------
+                    GrowingViewportSection(
                       key: _techStackKey,
-                      scrollController: _scrollController,
-                    ),
-                    AiVsHumanSplitScreen(scrollController: _scrollController),
-
-                    // Proyectos destacados -----------------------------------------------
-                    CustomConstrain(
-                      child: ProjectsSection(
-                        key: _projectsKey,
-                        scrollController: _scrollController,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          TechStackSlider(scrollController: _scrollController),
+                          AiVsHumanSplitScreen(
+                            scrollController: _scrollController,
+                          ),
+                        ],
                       ),
                     ),
 
-                    // Estudios -----------------------------------------------------------
-                    CustomConstrain(
-                      child: EducationSection(
-                        key: _educationKey,
-                        scrollController: _scrollController,
+                    // Projects (Section) -------------------------------------------------------
+                    GrowingViewportSection(
+                      key: _projectsKey,
+                      child: Center(
+                        child: CustomConstrain(
+                          child: ProjectsSection(
+                            scrollController: _scrollController,
+                          ),
+                        ),
                       ),
                     ),
 
-                    // Contacto -----------------------------------------------------------
+                    // Education (Section) -------------------------------------------------------
+                    ViewportSection(
+                      key: _educationKey,
+                      child: Center(
+                        child: CustomConstrain(
+                          child: EducationSection(
+                            scrollController: _scrollController,
+                          ),
+                        ),
+                      ),
+                    ),
+
+                    // Contact (Hook) -------------------------------------------------------
                     ContactHook(scrollController: _scrollController),
-                    CustomConstrain(
+
+                    // Contact (Section) -------------------------------------------------------
+                    ViewportSection(
+                      key: _contactKey,
                       child: ContactSection(
-                        key: _contactKey,
                         scrollController: _scrollController,
                       ),
                     ),
@@ -115,10 +144,13 @@ class _PortfolioPageState extends State<PortfolioPage> {
             top: 0,
             left: 0,
             right: 0,
-            child: AdaptivePortfolioAppBar(
-              scrollController: _scrollController,
-              navItems: _navItems,
-              leading: Logo(),
+            child: Padding(
+              padding: const EdgeInsets.only(right: SpacingConstants.xs),
+              child: AdaptivePortfolioAppBar(
+                scrollController: _scrollController,
+                navItems: _navItems,
+                leading: Logo(),
+              ),
             ),
           ),
         ],

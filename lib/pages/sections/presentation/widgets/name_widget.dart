@@ -10,8 +10,8 @@ class NameWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return AnimatedTranslation(
       origin: .fromLeft,
-      child: RichText(
-        text: TextSpan(
+      child: Text.rich(
+        TextSpan(
           style: TextStyle(wordSpacing: 10),
           children: [
             TextSpan(

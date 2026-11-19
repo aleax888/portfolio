@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+
+import 'package:portfolio/design_system/extensions/context_extensions.dart';
+import 'package:portfolio/design_system/utils/responsive_font_size.dart';
 import 'package:portfolio/design_system/constants/color_constants.dart';
 import 'package:portfolio/design_system/constants/text_constants.dart';
 import 'package:portfolio/widgets/layout/custom_container.dart';
@@ -26,7 +29,10 @@ class AmountLabelContainer extends StatelessWidget {
                 height: 0.8,
                 fontFamily: TextFamilyConstants.primary,
                 color: ColorPaletteConstants.quinary,
-                fontSize: 130,
+                fontSize: ResponsiveFontSize.linear(
+                  TextSizeConstants.displayNumber,
+                  context.viewportSize,
+                ),
                 fontWeight: TextWeightConstants.black,
               ),
             ),
@@ -36,7 +42,11 @@ class AmountLabelContainer extends StatelessWidget {
                 height: 0.8,
                 fontFamily: TextFamilyConstants.secondary,
                 color: TextColorConstants.light.withAlpha(150),
-                fontSize: TextSizeConstants.m,
+                fontSize: ResponsiveFontSize.logarithmic(
+                  TextSizeConstants.m,
+                  context.viewportSize,
+                  minScale: 0.8,
+                ),
                 fontWeight: TextWeightConstants.black,
               ),
             ),

@@ -1,6 +1,9 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+
+import 'package:portfolio/design_system/constants/layout_constants.dart';
+import 'package:portfolio/design_system/extensions/context_extensions.dart';
 import 'package:portfolio/design_system/constants/spacing_constants.dart';
 
 class CustomPadding extends StatelessWidget {
@@ -19,11 +22,11 @@ class CustomPadding extends StatelessWidget {
     return Padding(
       padding: EdgeInsetsGeometry.symmetric(
         horizontal: min(
-          MediaQuery.of(context).size.width * 0.05,
+          context.viewportSize.width * LayoutConstants.pageInsetFraction,
           horizontalPadding!,
         ),
         vertical: min(
-          MediaQuery.of(context).size.height * 0.05,
+          context.viewportSize.height * LayoutConstants.pageInsetFraction,
           verticalPadding!,
         ),
       ),

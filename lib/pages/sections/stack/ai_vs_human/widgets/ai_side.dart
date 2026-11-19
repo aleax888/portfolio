@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+
+import 'package:portfolio/design_system/extensions/context_extensions.dart';
+import 'package:portfolio/design_system/utils/responsive_font_size.dart';
 import 'package:portfolio/design_system/constants/color_constants.dart';
 import 'package:portfolio/design_system/constants/text_constants.dart';
 import 'package:portfolio/helpers/assets/images/me_enum.dart';
@@ -28,9 +31,12 @@ class AiSide extends StatelessWidget {
                     child: Text(
                       'AI-POWERED',
                       style: TextStyle(
-                        fontFamily:  TextFamilyConstants.primary,
+                        fontFamily: TextFamilyConstants.primary,
                         color: ColorPaletteConstants.secondary,
-                        fontSize: MediaQuery.of(context).size.width * 0.05,
+                        fontSize: ResponsiveFontSize.logarithmic(
+                          TextSizeConstants.statement,
+                          context.viewportSize,
+                        ),
                         fontWeight: TextWeightConstants.black,
                       ),
                       textAlign: TextAlign.start,

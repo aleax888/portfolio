@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:portfolio/design_system/constants/layout_constants.dart';
+import 'package:portfolio/design_system/constants/spacing_constants.dart';
 
 /// Un widget que divide el espacio disponible entre dos hijos [left] y [right].
 ///
@@ -7,18 +9,18 @@ import 'package:flutter/material.dart';
 /// - [right]       : Widget del lado derecho (o inferior en modo columna).
 /// - [split]       : Proporción que ocupa [left], valor entre 0.0 y 1.0.
 ///                   Por defecto 0.5 (50/50).
-/// - [gap]         : Espacio entre ambos widgets, en puntos lógicos. Default 16.
+/// - [gap]         : Espacio entre ambos widgets, en puntos lógicos. Usa el espaciado del sistema de diseño.
 /// - [breakpoint]  : Ancho mínimo en píxeles lógicos para mostrar layout en fila.
 ///                   Por debajo de este valor, los widgets se apilan verticalmente
-///                   y cada uno ocupa el 100% del ancho. Default 600.
+///                   y cada uno ocupa el 100% del ancho.
 class SplitView extends StatelessWidget {
   const SplitView({
     super.key,
     required this.left,
     required this.right,
     this.split = 0.5,
-    this.gap = 16.0,
-    this.breakpoint = 600.0,
+    this.gap = SpacingConstants.s,
+    this.breakpoint = LayoutConstants.splitWidth,
   }) : assert(split >= 0.0 && split <= 1.0, 'split debe estar entre 0.0 y 1.0');
 
   final Widget left;

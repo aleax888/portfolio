@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+
+import 'package:portfolio/design_system/extensions/context_extensions.dart';
+import 'package:portfolio/design_system/utils/responsive_font_size.dart';
 import 'package:portfolio/design_system/constants/text_constants.dart';
 import 'package:portfolio/widgets/animation/animated_levitation.dart';
 import 'package:portfolio/widgets/animation/animated_translation.dart';
@@ -18,7 +21,10 @@ class IosWidget extends StatelessWidget {
           text: 'iOS',
           fontFamily: TextFamilyConstants.tertiary,
           strokeColor: TextColorConstants.light,
-          fontSize: 100,
+          fontSize: ResponsiveFontSize.linear(
+            TextSizeConstants.platformLabel,
+            context.viewportSize,
+          ),
           fontWeight: TextWeightConstants.bold,
         ),
       ),

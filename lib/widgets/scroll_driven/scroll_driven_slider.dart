@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:portfolio/widgets/scroll_driven/viewport_observer.dart';
 
 enum SliderDirection { toRight, toLeft }
 
@@ -30,39 +31,21 @@ class ScrollDrivenSlider extends StatefulWidget {
     this.itemSize = 200.0,
     this.itemSpacing = 16.0,
     this.direction = SliderDirection.toLeft,
-  });
+  }) : assert(threshold > 0 && threshold <= 1);
 
   @override
   State<ScrollDrivenSlider> createState() => _ScrollDrivenSliderState();
 }
 
 class _ScrollDrivenSliderState extends State<ScrollDrivenSlider> {
-  final _key = GlobalKey();
   final _innerController = ScrollController();
 
-  /// Calcula el progreso [0.0, 1.0] basado en qué tan visible está el widget
-  /// dentro del viewport, comenzando cuando el leading edge entra en pantalla.
-  double _computeProgress() {
-    final renderBox = _key.currentContext?.findRenderObject() as RenderBox?;
-    if (renderBox == null || !widget.scrollController.hasClients) return 0.0;
-
-    final screenHeight = MediaQuery.of(context).size.height;
-    final widgetTop = renderBox.localToGlobal(Offset.zero).dy;
-
-    // El widget comienza a animarse cuando su borde superior entra al viewport.
-    // Completa la animación cuando su borde superior llega al threshold del viewport.
-    final start = screenHeight; // leading edge entra al viewport
-    final end = screenHeight * (1.0 - widget.threshold);
-
-    return ((start - widgetTop) / (start - end)).clamp(0.0, 1.0);
-  }
-
-  void _syncSlider() {
-    if (!mounted) return;
-
-    final progress = _computeProgress();
-    if (!_innerController.hasClients) return;
-
+  void _syncSlider(double top, ScrollPosition position) {
+    if (!_innerController.hasClients || position.viewportDimension <= 0) return;
+    final progress =
+        ((position.viewportDimension - top) /
+                (position.viewportDimension * widget.threshold))
+            .clamp(0.0, 1.0);
     final maxScroll = _innerController.position.maxScrollExtent;
     final rawOffset = progress * maxScroll;
 
@@ -72,58 +55,59 @@ class _ScrollDrivenSliderState extends State<ScrollDrivenSlider> {
         ? (rawOffset + offsetPixels).clamp(0.0, maxScroll)
         : (maxScroll - rawOffset - offsetPixels).clamp(0.0, maxScroll);
 
-    _innerController.jumpTo(target);
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    widget.scrollController.addListener(_syncSlider);
+    if (_innerController.offset != target) _innerController.jumpTo(target);
   }
 
   @override
   void dispose() {
-    widget.scrollController.removeListener(_syncSlider);
     _innerController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-
-    return SizedBox(
-      key: _key,
-      height: widget.itemSize,
-      child: ScrollConfiguration(
-        // Deshabilita el scroll manual del usuario
-        behavior: const ScrollBehavior().copyWith(scrollbars: false),
-        child: SingleChildScrollView(
-          controller: _innerController,
-          scrollDirection: Axis.horizontal,
-          physics: const NeverScrollableScrollPhysics(),
-          child: Row(
-            children: [
-              // Padding fantasma izquierdo para efecto de aparición
-              SizedBox(width: screenWidth),
-              ...List.generate(
-                widget.items.length,
-                (i) => Padding(
-                  padding: EdgeInsets.only(
-                    right: i < widget.items.length - 1 ? widget.itemSpacing : 0,
-                  ),
-                  child: SizedBox(
-                    width: widget.itemSize,
-                    height: widget.itemSize,
-                    child: widget.items[i],
-                  ),
+    return ViewportObserver(
+      controller: widget.scrollController,
+      onPosition: _syncSlider,
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final screenWidth = constraints.maxWidth;
+          return SizedBox(
+            height: widget.itemSize,
+            child: ScrollConfiguration(
+              // Deshabilita el scroll manual del usuario
+              behavior: const ScrollBehavior().copyWith(scrollbars: false),
+              child: SingleChildScrollView(
+                controller: _innerController,
+                scrollDirection: Axis.horizontal,
+                physics: const NeverScrollableScrollPhysics(),
+                child: Row(
+                  children: [
+                    // Padding fantasma izquierdo para efecto de aparición
+                    SizedBox(width: screenWidth),
+                    ...List.generate(
+                      widget.items.length,
+                      (i) => Padding(
+                        padding: EdgeInsets.only(
+                          right: i < widget.items.length - 1
+                              ? widget.itemSpacing
+                              : 0,
+                        ),
+                        child: SizedBox(
+                          width: widget.itemSize,
+                          height: widget.itemSize,
+                          child: widget.items[i],
+                        ),
+                      ),
+                    ),
+                    // Padding fantasma derecho para efecto de desaparición
+                    SizedBox(width: screenWidth),
+                  ],
                 ),
               ),
-              // Padding fantasma derecho para efecto de desaparición
-              SizedBox(width: screenWidth),
-            ],
-          ),
-        ),
+            ),
+          );
+        },
       ),
     );
   }

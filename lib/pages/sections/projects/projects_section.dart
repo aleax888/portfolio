@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:portfolio/domain/projects/project_enum.dart';
 import 'package:portfolio/pages/widgets/project_card.dart';
-import 'package:portfolio/widgets/content/full_screen_section.dart';
+import 'package:portfolio/widgets/layout/custom_padding.dart';
 import 'package:portfolio/widgets/content/section_title.dart';
 import 'package:portfolio/widgets/layout/custom_column.dart';
 import 'package:portfolio/widgets/layout/three_card_layout.dart';
@@ -13,7 +13,7 @@ class ProjectsSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FullScreenSection(
+    return CustomPadding(
       child: ScrollReveal(
         scrollController: scrollController,
         child: CustomColumn(
@@ -23,30 +23,28 @@ class ProjectsSection extends StatelessWidget {
               scrollController: scrollController,
               title: 'MY PROJECTS',
             ),
-            Expanded(
-              child: ThreeCardLayout(
-                left: ProjectCard(
-                  imagePath: ProjectEnum.gymFlow.image,
-                  axis: Axis.vertical,
-                  title: ProjectEnum.gymFlow.name,
-                  description: ProjectEnum.gymFlow.description,
-                  techStack: ProjectEnum.gymFlow.technologies,
-                  link: ProjectEnum.gymFlow.link,
-                ),
-                topRight: ProjectCard(
-                  imagePath: ProjectEnum.ledPanel.image,
-                  title: ProjectEnum.ledPanel.name,
-                  description: ProjectEnum.ledPanel.description,
-                  techStack: ProjectEnum.ledPanel.technologies,
-                  link: ProjectEnum.ledPanel.link,
-                ),
-                bottomRight: ProjectCard(
-                  imagePath: ProjectEnum.textArt.image,
-                  title: ProjectEnum.textArt.name,
-                  description: ProjectEnum.textArt.description,
-                  techStack: ProjectEnum.textArt.technologies,
-                  link: ProjectEnum.textArt.link,
-                ),
+            ThreeCardLayout(
+              left: ProjectCard(
+                imagePath: ProjectEnum.gymFlow.image,
+                axis: Axis.vertical,
+                title: ProjectEnum.gymFlow.name,
+                description: ProjectEnum.gymFlow.description,
+                techStack: ProjectEnum.gymFlow.technologies,
+                link: ProjectEnum.gymFlow.link,
+              ),
+              topRight: ProjectCard(
+                imagePath: ProjectEnum.ledPanel.image,
+                title: ProjectEnum.ledPanel.name,
+                description: ProjectEnum.ledPanel.description,
+                techStack: ProjectEnum.ledPanel.technologies,
+                link: ProjectEnum.ledPanel.link,
+              ),
+              bottomRight: ProjectCard(
+                imagePath: ProjectEnum.textArt.image,
+                title: ProjectEnum.textArt.name,
+                description: ProjectEnum.textArt.description,
+                techStack: ProjectEnum.textArt.technologies,
+                link: ProjectEnum.textArt.link,
               ),
             ),
           ],

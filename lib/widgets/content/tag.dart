@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+
+import 'package:portfolio/design_system/constants/layout_constants.dart';
+import 'package:portfolio/design_system/extensions/context_extensions.dart';
 import 'package:portfolio/design_system/constants/border_constants.dart';
 import 'package:portfolio/design_system/constants/color_constants.dart';
 import 'package:portfolio/design_system/constants/spacing_constants.dart';
@@ -25,13 +28,16 @@ class CustomTag extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: MediaQuery.of(context).size.width > 700
+      padding: context.viewportSize.width >= LayoutConstants.tabletWidth
           ? padding
-          : EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+          : const EdgeInsets.symmetric(
+              horizontal: SpacingConstants.xxs,
+              vertical: SpacingConstants.xxxs,
+            ),
       decoration: BoxDecoration(
         color: color.withAlpha(51),
         border: Border.all(color: color, width: BorderWidthConstants.xxs),
-        borderRadius: MediaQuery.of(context).size.width > 700
+        borderRadius: context.viewportSize.width >= LayoutConstants.tabletWidth
             ? borderRadius
             : BorderRadius.all(Radius.circular(BorderRadiusConstants.s)),
       ),

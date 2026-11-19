@@ -1,6 +1,9 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+
+import 'package:portfolio/design_system/constants/layout_constants.dart';
+import 'package:portfolio/design_system/extensions/context_extensions.dart';
 import 'package:portfolio/design_system/constants/spacing_constants.dart';
 import 'package:portfolio/design_system/constants/text_constants.dart';
 import 'package:portfolio/domain/tech_stack/complementary_stack_enum.dart';
@@ -42,7 +45,11 @@ class TechStackSlider extends StatelessWidget {
               (stack) => ScrollDrivenSlider(
                 direction: stack.key % 2 == 0 ? .toLeft : .toRight,
                 scrollController: scrollController,
-                itemSize: max(150, MediaQuery.of(context).size.width * 0.15),
+                itemSize: max(
+                  LayoutConstants.minStackCardSize,
+                  context.viewportSize.width *
+                      LayoutConstants.stackCardWidthFraction,
+                ),
                 itemSpacing: SpacingConstants.m,
                 items: stack.value
                     .map(

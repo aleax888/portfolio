@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+
+import 'package:portfolio/design_system/constants/layout_constants.dart';
 import 'package:portfolio/design_system/constants/spacing_constants.dart';
 
 class ThreeCardLayout extends StatelessWidget {
@@ -20,18 +22,15 @@ class ThreeCardLayout extends StatelessWidget {
     return LayoutBuilder(
       builder: (context, constraints) {
         // Breakpoint móvil
-        if (constraints.maxWidth < 768) {
+        if (constraints.maxWidth < LayoutConstants.tabletWidth) {
           return Column(
             spacing: spacing,
-            children: [
-              Expanded(child: left),
-              Expanded(child: topRight),
-              Expanded(child: bottomRight),
-            ],
+            children: [left, topRight, bottomRight],
           );
         }
 
         return Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
           spacing: spacing,
           children: [
             Expanded(flex: 3, child: left),
@@ -39,10 +38,7 @@ class ThreeCardLayout extends StatelessWidget {
               flex: 4,
               child: Column(
                 spacing: spacing,
-                children: [
-                  Expanded(child: topRight),
-                  Expanded(child: bottomRight),
-                ],
+                children: [topRight, bottomRight],
               ),
             ),
           ],

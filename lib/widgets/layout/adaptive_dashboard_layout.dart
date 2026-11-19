@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+
+import 'package:portfolio/design_system/constants/layout_constants.dart';
 import 'package:portfolio/design_system/constants/spacing_constants.dart';
 import 'package:portfolio/widgets/animation/animated_translation.dart';
 
@@ -26,242 +28,65 @@ class AdaptiveDashboardLayout extends StatelessWidget {
     required this.scrollController,
   });
 
-  static const double mobileBreakpoint = 768;
-  static const double desktopBreakpoint = 1200;
-
   @override
   Widget build(BuildContext context) {
+    Widget panel(Widget child, TranslationOrigin origin) => AnimatedTranslation(
+      origin: origin,
+      scrollController: scrollController,
+      child: child,
+    );
+    Widget column(List<Widget> panels) => Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      spacing: gap,
+      children: panels,
+    );
+    Widget row(List<Widget> panels) => Row(
+      spacing: gap,
+      children: [for (final child in panels) Expanded(child: child)],
+    );
+    final school = panel(a, .fromLeft);
+    final hello = panel(b, .fromLeft);
+    final world = panel(c, .fromRight);
+    final language = panel(d, .fromRight);
+    final certificates = panel(e, .fromBottomLeft);
+    final days = panel(f, .fromBottom);
+    final interests = panel(g, .fromBottomRight);
+
     return LayoutBuilder(
       builder: (context, constraints) {
-        final width = constraints.maxWidth;
-
-        if (width < mobileBreakpoint) {
-          return _buildMobile();
+        final greeting = row([hello, world]);
+        if (constraints.maxWidth < LayoutConstants.splitWidth) {
+          return column([
+            school,
+            greeting,
+            row([language, certificates]),
+            row([days, interests]),
+          ]);
         }
-
-        if (width < desktopBreakpoint) {
-          return _buildTablet();
+        if (constraints.maxWidth < LayoutConstants.wideSplitWidth) {
+          return Row(
+            spacing: gap,
+            children: [
+              Expanded(flex: 3, child: school),
+              Expanded(
+                flex: 2,
+                child: column([
+                  greeting,
+                  row([language, certificates]),
+                  row([days, interests]),
+                ]),
+              ),
+            ],
+          );
         }
-
-        return _buildDesktop();
+        return column([
+          row([
+            school,
+            column([greeting, language]),
+          ]),
+          row([certificates, days, interests]),
+        ]);
       },
-    );
-  }
-
-  Widget _buildMobile() {
-    return Column(
-      spacing: gap,
-      children: [
-        Expanded(
-          child: AnimatedTranslation(
-            origin: .fromLeft,
-            scrollController: scrollController,
-            child: a,
-          ),
-        ),
-        Expanded(
-          child: AnimatedTranslation(
-            origin: .fromRight,
-            scrollController: scrollController,
-            child: b,
-          ),
-        ),
-        Expanded(
-          child: AnimatedTranslation(
-            origin: .fromLeft,
-            scrollController: scrollController,
-            child: c,
-          ),
-        ),
-        Expanded(
-          child: AnimatedTranslation(
-            origin: .fromRight,
-            scrollController: scrollController,
-            child: d,
-          ),
-        ),
-        Expanded(
-          child: AnimatedTranslation(
-            origin: .fromLeft,
-            scrollController: scrollController,
-            child: e,
-          ),
-        ),
-        Expanded(
-          child: AnimatedTranslation(
-            origin: .fromRight,
-            scrollController: scrollController,
-            child: f,
-          ),
-        ),
-        Expanded(
-          child: AnimatedTranslation(
-            origin: .fromLeft,
-            scrollController: scrollController,
-            child: g,
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildTablet() {
-    return Column(
-      spacing: gap,
-      children: [
-        Expanded(
-          child: AnimatedTranslation(
-            origin: .fromLeft,
-            scrollController: scrollController,
-            child: a,
-          ),
-        ),
-
-        Expanded(
-          child: Row(
-            spacing: gap,
-            children: [
-              Expanded(
-                child: AnimatedTranslation(
-                  origin: .fromLeft,
-                  scrollController: scrollController,
-                  child: b,
-                ),
-              ),
-              Expanded(
-                child: AnimatedTranslation(
-                  origin: .fromRight,
-                  scrollController: scrollController,
-                  child: c,
-                ),
-              ),
-            ],
-          ),
-        ),
-
-        Expanded(
-          child: AnimatedTranslation(
-            origin: .fromRight,
-            scrollController: scrollController,
-            child: d,
-          ),
-        ),
-
-        Expanded(
-          child: Row(
-            spacing: gap,
-            children: [
-              Expanded(
-                child: AnimatedTranslation(
-                  origin: .fromLeft,
-                  scrollController: scrollController,
-                  child: e,
-                ),
-              ),
-              Expanded(
-                child: AnimatedTranslation(
-                  origin: .fromRight,
-                  scrollController: scrollController,
-                  child: g,
-                ),
-              ),
-            ],
-          ),
-        ),
-
-        Expanded(
-          child: AnimatedTranslation(
-            origin: .fromLeft,
-            scrollController: scrollController,
-            child: f,
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildDesktop() {
-    return Column(
-      spacing: gap,
-      children: [
-        Expanded(
-          child: Row(
-            spacing: gap,
-            children: [
-              Expanded(
-                child: AnimatedTranslation(
-                  origin: .fromLeft,
-                  scrollController: scrollController,
-                  child: a,
-                ),
-              ),
-              Expanded(
-                child: Column(
-                  spacing: gap,
-                  children: [
-                    Expanded(
-                      child: Row(
-                        spacing: gap,
-                        children: [
-                          Expanded(
-                            child: AnimatedTranslation(
-                              origin: .fromLeft,
-                              scrollController: scrollController,
-                              child: b,
-                            ),
-                          ),
-                          Expanded(
-                            child: AnimatedTranslation(
-                              origin: .fromRight,
-                              scrollController: scrollController,
-                              child: c,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Expanded(
-                      child: AnimatedTranslation(
-                        origin: .fromRight,
-                        scrollController: scrollController,
-                        child: d,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
-        Expanded(
-          child: Row(
-            spacing: gap,
-            children: [
-              Expanded(
-                child: AnimatedTranslation(
-                  origin: .fromBottomLeft,
-                  scrollController: scrollController,
-                  child: e,
-                ),
-              ),
-              Expanded(
-                child: AnimatedTranslation(
-                  origin: .fromBottom,
-                  scrollController: scrollController,
-                  child: f,
-                ),
-              ),
-              Expanded(
-                child: AnimatedTranslation(
-                  origin: .fromBottomRight,
-                  scrollController: scrollController,
-                  child: g,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ],
     );
   }
 }
