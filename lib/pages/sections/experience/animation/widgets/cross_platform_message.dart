@@ -37,7 +37,7 @@ class CrossPlatformMessage extends StatelessWidget {
           'Mobile experiences designed for retention, performance and growth.',
           textAlign: .center,
           style: TextStyle(
-            color: TextColorConstants.light,
+            color: TextColorConstants.gray,
             fontSize: TextSizeConstants.m,
             fontWeight: TextWeightConstants.black,
           ),

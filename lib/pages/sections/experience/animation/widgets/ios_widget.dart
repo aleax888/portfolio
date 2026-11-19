@@ -19,13 +19,11 @@ class IosWidget extends StatelessWidget {
       child: AnimatedLevitation(
         child: OutlinedText(
           text: 'iOS',
-          fontFamily: TextFamilyConstants.tertiary,
+          strokeWidth: 2,
           strokeColor: TextColorConstants.light,
-          fontSize: ResponsiveFontSize.linear(
-            TextSizeConstants.platformLabel,
-            context.viewportSize,
-          ),
+          fontSize: ResponsiveFontSize.linear(100, context.viewportSize),
           fontWeight: TextWeightConstants.bold,
+          fontFamily: TextFamilyConstants.tertiary,
         ),
       ),
     );

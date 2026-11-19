@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:portfolio/design_system/constants/color_constants.dart';
 
 import 'package:portfolio/design_system/extensions/context_extensions.dart';
 import 'package:portfolio/design_system/utils/responsive_font_size.dart';
@@ -19,13 +20,11 @@ class AndroidWidget extends StatelessWidget {
       child: AnimatedLevitation(
         child: OutlinedText(
           text: 'Android',
-          fontFamily: TextFamilyConstants.tertiary,
-          strokeColor: TextColorConstants.light,
-          fontSize: ResponsiveFontSize.linear(
-            TextSizeConstants.platformLabel,
-            context.viewportSize,
-          ),
+          strokeWidth: 2,
+          strokeColor: ColorPaletteConstants.tertiary,
+          fontSize: ResponsiveFontSize.linear(100, context.viewportSize),
           fontWeight: TextWeightConstants.bold,
+          fontFamily: TextFamilyConstants.tertiary,
         ),
       ),
     );
