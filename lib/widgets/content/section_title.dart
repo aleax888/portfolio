@@ -21,41 +21,46 @@ class SectionTitle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Align(
-      alignment: Alignment.centerLeft,
-      child: AnimatedTranslation(
-        origin: .fromLeft,
-        scrollController: scrollController,
-        child: Stack(
-          alignment: .centerLeft,
-          children: [
-            Text(
-              index.toString().padLeft(2, '0'),
-              style: TextStyle(
-                fontFamily: TextFamilyConstants.primary,
-                color: color.withAlpha(51),
-                fontSize: ResponsiveFontSize.linear(
-                  TextSizeConstants.sectionNumberMax,
-                  context.viewportSize,
-                ),
-                fontWeight: TextWeightConstants.black,
+    return AnimatedTranslation(
+      origin: .fromLeft,
+      scrollController: scrollController,
+      child: Stack(
+        alignment: .centerLeft,
+        children: [
+          // Background Number -------------------------------------------------------
+          Text(
+            index.toString().padLeft(2, '0'),
+            style: TextStyle(
+              color: color.withAlpha(51),
+              fontSize: ResponsiveFontSize.linear(
+                120,
+                context.viewportSize,
+                minScale: 0.8,
               ),
-              textHeightBehavior: const TextHeightBehavior(
-                applyHeightToFirstAscent: false,
-                applyHeightToLastDescent: false,
-              ),
+              fontFamily: TextFamilyConstants.primary,
+              fontWeight: TextWeightConstants.black,
             ),
-            Text(
-              '/  /  $title',
-              style: TextStyle(
-                fontFamily: TextFamilyConstants.secondary,
-                color: color,
-                fontSize: TextSizeConstants.s,
-                fontWeight: TextWeightConstants.bold,
-              ),
+            textHeightBehavior: const TextHeightBehavior(
+              applyHeightToFirstAscent: false,
+              applyHeightToLastDescent: false,
             ),
-          ],
-        ),
+          ),
+
+          // Title -------------------------------------------------------
+          Text(
+            '/ /  $title',
+            style: TextStyle(
+              color: color,
+              fontSize: ResponsiveFontSize.linear(
+                TextSizeConstants.m,
+                context.viewportSize,
+                minScale: 0.8,
+              ),
+              fontWeight: TextWeightConstants.bold,
+              fontFamily: TextFamilyConstants.secondary,
+            ),
+          ),
+        ],
       ),
     );
   }

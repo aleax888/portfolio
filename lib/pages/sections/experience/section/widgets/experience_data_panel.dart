@@ -22,16 +22,23 @@ class ExperienceDataPanel extends StatelessWidget {
         child: Column(
           crossAxisAlignment: .start,
           children: [
+            // Years of Experience -------------------------------------------------------
             AmountLabel(
               amount:
                   '+${ExperienceEnum.values.map((e) => e.durationInMonths).reduce((a, b) => a + b) ~/ 12}',
               label: 'Productive years',
             ),
+
+            // Professional Roles -------------------------------------------------------
             AmountLabel(
               amount: '${ExperienceEnum.values.length}',
               label: 'Professional roles',
             ),
+
+            // Published Apps -------------------------------------------------------
             AmountLabel(amount: '2', label: 'Published apps'),
+            
+            // Hook -------------------------------------------------------
             AmountLabel(amount: '∞', label: 'Lines of code written'),
           ],
         ),

@@ -5,6 +5,14 @@ import 'package:portfolio/design_system/constants/spacing_constants.dart';
 import 'package:portfolio/design_system/constants/text_constants.dart';
 import 'package:portfolio/domain/experience/experience_enum.dart';
 import 'package:portfolio/widgets/content/tag.dart';
+import 'package:portfolio/widgets/layout/custom_column.dart';
+
+final TextStyle _dateTextStyle = const TextStyle(
+  color: ColorPaletteConstants.tertiary,
+  fontSize: TextSizeConstants.l,
+  fontWeight: TextWeightConstants.extraBold,
+  fontFamily: TextFamilyConstants.primary,
+);
 
 class ExperienceCard extends StatelessWidget {
   final ExperienceEnum data;
@@ -16,48 +24,36 @@ class ExperienceCard extends StatelessWidget {
       spacing: SpacingConstants.l,
       crossAxisAlignment: .end,
       children: [
+        // Duration (Dates) -------------------------------------------------------
         Expanded(
           flex: 2,
           child: Column(
             crossAxisAlignment: .start,
             children: [
-              Text(
-                data.begin,
-                style: const TextStyle(
-                  fontFamily: TextFamilyConstants.primary,
-                  color: ColorPaletteConstants.tertiary,
-                  fontSize: TextSizeConstants.l,
-                  fontWeight: TextWeightConstants.extraBold,
-                ),
-              ),
-              Text(
-                data.end,
-                style: const TextStyle(
-                  fontFamily: TextFamilyConstants.primary,
-                  color: ColorPaletteConstants.tertiary,
-                  fontSize: TextSizeConstants.l,
-                  fontWeight: TextWeightConstants.extraBold,
-                ),
-              ),
+              Text(data.begin, style: _dateTextStyle),
+              Text(data.end, style: _dateTextStyle),
             ],
           ),
         ),
+
+        // Experience Details -------------------------------------------------------
         Expanded(
           flex: 8,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+          child: CustomColumn(
             children: [
+              // Company Name -------------------------------------------------------
               Text(
                 data.name,
                 style: const TextStyle(
-                  fontFamily: TextFamilyConstants.secondary,
-                  fontStyle: .italic,
                   color: TextColorConstants.light,
                   fontSize: TextSizeConstants.l,
                   fontWeight: TextWeightConstants.regular,
+                  fontFamily: TextFamilyConstants.secondary,
+                  fontStyle: .italic,
                 ),
               ),
-              SizedBox(height: SpacingConstants.s),
+
+              // Position -------------------------------------------------------
               CustomTag(
                 text: data.position,
                 color: ColorPaletteConstants.quinary,
@@ -65,7 +61,8 @@ class ExperienceCard extends StatelessWidget {
                   Radius.circular(BorderRadiusConstants.xl),
                 ),
               ),
-              SizedBox(height: SpacingConstants.l),
+
+              // Description -------------------------------------------------------
               Text(
                 data.description,
                 style: const TextStyle(
@@ -75,7 +72,8 @@ class ExperienceCard extends StatelessWidget {
                   fontWeight: TextWeightConstants.regular,
                 ),
               ),
-              SizedBox(height: SpacingConstants.m),
+
+              // Technologies -------------------------------------------------------
               Wrap(
                 spacing: SpacingConstants.s,
                 children: [

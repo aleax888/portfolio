@@ -17,21 +17,17 @@ class ExperienceMessageWidget extends StatelessWidget {
       child: Text.rich(
         TextSpan(
           style: TextStyle(
-            fontFamily: TextFamilyConstants.secondary,
-            fontStyle: .italic,
+            color: TextColorConstants.light,
             fontSize: ResponsiveFontSize.logarithmic(
-              TextSizeConstants.statement,
+              TextSizeConstants.xxl,
               context.viewportSize,
             ),
+            fontWeight: TextWeightConstants.regular,
+            fontFamily: TextFamilyConstants.secondary,
+            fontStyle: .italic,
           ),
           children: [
-            TextSpan(
-              text: "Engineering ",
-              style: TextStyle(
-                color: TextColorConstants.light,
-                fontWeight: TextWeightConstants.regular,
-              ),
-            ),
+            TextSpan(text: "Engineering "),
             TextSpan(
               text: "software products ",
               style: TextStyle(
@@ -39,13 +35,7 @@ class ExperienceMessageWidget extends StatelessWidget {
                 fontWeight: TextWeightConstants.black,
               ),
             ),
-            TextSpan(
-              text: "for scale and impact.",
-              style: TextStyle(
-                color: TextColorConstants.light,
-                fontWeight: TextWeightConstants.regular,
-              ),
-            ),
+            TextSpan(text: "for scale and impact."),
           ],
         ),
       ),

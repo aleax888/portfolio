@@ -70,12 +70,8 @@ class _PortfolioPageState extends State<PortfolioPage> {
                     // Experience (Section) -------------------------------------------------------
                     GrowingViewportSection(
                       key: _experienceKey,
-                      child: Center(
-                        child: CustomConstrain(
-                          child: ExperienceSection(
-                            scrollController: _scrollController,
-                          ),
-                        ),
+                      child: ExperienceSection(
+                        scrollController: _scrollController,
                       ),
                     ),
 

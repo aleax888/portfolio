@@ -33,16 +33,29 @@ class AmountLabel extends StatelessWidget {
     return Column(
       crossAxisAlignment: .start,
       children: [
+        // Amount -------------------------------------------------------
         Text(
           amount,
           style: amountLabel.copyWith(
             fontSize: ResponsiveFontSize.logarithmic(
-              amountLabel.fontSize ?? TextSizeConstants.statistic,
+              amountLabel.fontSize!,
               context.viewportSize,
+              minScale: 0.8,
             ),
           ),
         ),
-        Text(label, style: labelStyle),
+
+        // Label -------------------------------------------------------
+        Text(
+          label,
+          style: labelStyle.copyWith(
+            fontSize: ResponsiveFontSize.logarithmic(
+              labelStyle.fontSize!,
+              context.viewportSize,
+              minScale: 0.8,
+            ),
+          ),
+        ),
       ],
     );
   }

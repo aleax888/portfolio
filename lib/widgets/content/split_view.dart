@@ -53,6 +53,7 @@ class SplitView extends StatelessWidget {
 
     return Row(
       spacing: gap,
+      crossAxisAlignment: .start,
       children: [
         SizedBox(width: leftWidth, child: left),
         SizedBox(width: rightWidth, child: right),
