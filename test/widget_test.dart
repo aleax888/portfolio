@@ -1,3 +1,5 @@
+import 'package:flutter/gestures.dart';
+import 'package:portfolio/widgets/layout/custom_appbar/custom_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -127,8 +129,12 @@ void main() {
       addTearDown(tester.view.reset);
       await tester.pumpWidget(const MyApp());
       await tester.pump(const Duration(seconds: 2));
-      await tester.tap(find.byTooltip('Mostrar cabecera'));
-      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
+      if (size.width >= 900) {
+        await tester.tap(find.byTooltip('Mostrar cabecera'));
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 300));
+      }
       if (size.width < 900) {
         await tester.tap(find.byTooltip('Menú'));
         await tester.pump();
@@ -185,35 +191,48 @@ void main() {
     );
   });
 
-  testWidgets('Only the bubble reopens the header for another two seconds', (
-    tester,
-  ) async {
-    await tester.pumpWidget(const MyApp());
-    final controller = tester
-        .widget<PortfolioScrollView>(find.byType(PortfolioScrollView))
-        .controller;
-    final bubble = find.byTooltip('Mostrar cabecera');
-    final menu = find.byTooltip('Menú');
-    expect(menu, findsOneWidget);
-    await tester.pump(const Duration(milliseconds: 1500));
-    controller.jumpTo(300);
-    await tester.pump(const Duration(milliseconds: 499));
-    expect(menu, findsOneWidget);
-    await tester.pump(const Duration(milliseconds: 1));
-    expect(bubble, findsOneWidget);
-    controller.jumpTo(0);
-    await tester.pump(const Duration(seconds: 3));
-    expect(menu, findsNothing);
-    await tester.tap(bubble);
-    await tester.pump();
-    await tester.pump(const Duration(milliseconds: 1999));
-    expect(menu, findsOneWidget);
-    expect(bubble, findsNothing);
-    await tester.pump(const Duration(milliseconds: 1));
-    expect(bubble, findsOneWidget);
-    await tester.tap(bubble);
-    await tester.pumpWidget(const SizedBox.shrink());
-    await tester.pump(const Duration(seconds: 3));
-    expect(tester.takeException(), isNull);
-  });
+  testWidgets(
+    'Desktop header waits two full seconds after the pointer leaves',
+    (tester) async {
+      tester.view.devicePixelRatio = 1;
+      tester.view.physicalSize = const Size(1200, 700);
+      addTearDown(tester.view.reset);
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: Align(
+              alignment: Alignment.topCenter,
+              child: AdaptivePortfolioAppBar(
+                navItems: [
+                  PortfolioNavItem(label: 'Home', sectionKey: GlobalKey()),
+                ],
+              ),
+            ),
+          ),
+        ),
+      );
+      final mouse = await tester.createGesture(kind: PointerDeviceKind.mouse);
+      await mouse.addPointer(location: const Offset(400, 200));
+      addTearDown(mouse.removePointer);
+      final bubble = find.byTooltip('Mostrar cabecera');
+      for (var i = 0; i < 2; i++) {
+        await tester.pump(const Duration(milliseconds: 1500));
+        await mouse.moveTo(const Offset(400, 20));
+        await tester.pump(const Duration(seconds: 3));
+        expect(bubble, findsNothing);
+        await mouse.moveTo(const Offset(400, 200));
+      }
+      await tester.pump(const Duration(milliseconds: 1999));
+      expect(bubble, findsNothing);
+      await tester.pump(const Duration(milliseconds: 1));
+      expect(bubble, findsOneWidget);
+      await tester.pump(const Duration(milliseconds: 300));
+      expect(find.text('Home'), findsNothing);
+      await tester.tap(bubble);
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
+      expect(find.text('Home'), findsOneWidget);
+      await tester.pumpWidget(const SizedBox.shrink());
+    },
+  );
 }

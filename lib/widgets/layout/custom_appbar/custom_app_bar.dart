@@ -9,12 +9,9 @@ import 'package:portfolio/design_system/constants/spacing_constants.dart';
 import 'package:portfolio/design_system/constants/text_constants.dart';
 import 'package:portfolio/widgets/layout/custom_container.dart';
 
-enum _AppBarLayoutType { web, compact }
-
 class AdaptivePortfolioAppBar extends StatefulWidget {
   const AdaptivePortfolioAppBar({
     super.key,
-
     required this.navItems,
     this.leading,
     this.height = defaultHeight,
@@ -38,33 +35,6 @@ class AdaptivePortfolioAppBar extends StatefulWidget {
 
 class _AdaptivePortfolioAppBarState extends State<AdaptivePortfolioAppBar> {
   PortfolioNavItem? _selected;
-  late Timer _hideTimer;
-  bool _showHeader = true;
-
-  @override
-  void initState() {
-    super.initState();
-    _startHideTimer();
-  }
-
-  void _startHideTimer() {
-    _hideTimer = Timer(MotionConstants.headerVisibleDuration, () {
-      setState(() => _showHeader = false);
-    });
-  }
-
-  void _openHeader() {
-    _hideTimer.cancel();
-    setState(() => _showHeader = true);
-    _startHideTimer();
-  }
-
-  @override
-  void dispose() {
-    _hideTimer.cancel();
-    super.dispose();
-  }
-
   void _navigateTo(PortfolioNavItem item) {
     final target = item.sectionKey.currentContext;
     if (target != null) {
@@ -79,82 +49,73 @@ class _AdaptivePortfolioAppBarState extends State<AdaptivePortfolioAppBar> {
 
   @override
   Widget build(BuildContext context) {
-    if (!_showHeader) {
-      return SafeArea(
-        bottom: false,
-        child: Align(
-          alignment: Alignment.topRight,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: SpacingConstants.s,
-              vertical: SpacingConstants.xs,
-            ),
-            child: Material(
-              shape: const CircleBorder(),
-              color: Theme.of(context).colorScheme.surface,
-              elevation: widget.elevation,
-              child: IconButton(
-                tooltip: 'Mostrar cabecera',
-                constraints: const BoxConstraints.tightFor(
-                  width: LayoutConstants.touchTarget,
-                  height: LayoutConstants.touchTarget,
+    return SafeArea(
+      bottom: false,
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final textScale =
+              MediaQuery.textScalerOf(context).scale(TextSizeConstants.s) /
+              TextSizeConstants.s;
+          Widget button(String tooltip, VoidCallback onPressed) => Align(
+            alignment: Alignment.topRight,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: SpacingConstants.s,
+                vertical: SpacingConstants.xs,
+              ),
+              child: Material(
+                shape: const CircleBorder(),
+                color: Theme.of(context).colorScheme.surface,
+                elevation: widget.elevation,
+                child: IconButton(
+                  tooltip: tooltip,
+                  onPressed: onPressed,
+                  constraints: const BoxConstraints.tightFor(
+                    width: LayoutConstants.touchTarget,
+                    height: LayoutConstants.touchTarget,
+                  ),
+                  icon: const Icon(Icons.menu),
                 ),
-                icon: const Icon(Icons.menu),
-                onPressed: _openHeader,
               ),
             ),
-          ),
-        ),
-      );
-    }
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        final textScale =
-            MediaQuery.textScalerOf(context).scale(TextSizeConstants.s) /
-            TextSizeConstants.s;
-        final layout = constraints.maxWidth < widget.webBreakpoint * textScale
-            ? _AppBarLayoutType.compact
-            : _AppBarLayoutType.web;
-        return _buildBar(context, layout);
-      },
+          );
+          if (constraints.maxWidth < widget.webBreakpoint * textScale) {
+            return button('Men\u00fa', () => _openSideMenu(context));
+          }
+          return _DesktopHeader(
+            bar: _buildBar(context),
+            buildButton: (open) => button('Mostrar cabecera', open),
+          );
+        },
+      ),
     );
   }
 
-  Widget _buildBar(BuildContext context, _AppBarLayoutType layoutType) {
+  Widget _buildBar(BuildContext context) {
     return Material(
       color: widget.backgroundColor ?? Colors.transparent,
       elevation: widget.elevation,
       child: SizedBox(
         height: widget.height,
-        child: SafeArea(
-          bottom: false,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: SpacingConstants.s),
-            child: Row(
-              children: [
-                Expanded(
-                  child: Align(
-                    alignment: Alignment.centerLeft,
-                    child: FittedBox(
-                      fit: BoxFit.scaleDown,
-                      child: widget.leading,
-                    ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: SpacingConstants.s),
+          child: Row(
+            children: [
+              Expanded(
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: widget.leading,
                   ),
                 ),
-                if (layoutType == _AppBarLayoutType.web)
-                  _WebNavOptions(
-                    items: widget.navItems,
-                    activeItem: _selected,
-                    onTap: _navigateTo,
-                  )
-                else
-                  IconButton(
-                    icon: const Icon(Icons.menu),
-                    tooltip: 'Menú',
-                    onPressed: () => _openSideMenu(context),
-                  ),
-              ],
-            ),
+              ),
+              _WebNavOptions(
+                items: widget.navItems,
+                activeItem: _selected,
+                onTap: _navigateTo,
+              ),
+            ],
           ),
         ),
       ),
@@ -193,6 +154,72 @@ class _AdaptivePortfolioAppBarState extends State<AdaptivePortfolioAppBar> {
       },
     );
     if (mounted && selected != null) _navigateTo(selected);
+  }
+}
+
+class _DesktopHeader extends StatefulWidget {
+  const _DesktopHeader({required this.bar, required this.buildButton});
+  final Widget bar;
+  final Widget Function(VoidCallback open) buildButton;
+
+  @override
+  State<_DesktopHeader> createState() => _DesktopHeaderState();
+}
+
+class _DesktopHeaderState extends State<_DesktopHeader> {
+  Timer? _timer;
+  bool _visible = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _restartTimer();
+  }
+
+  void _restartTimer() {
+    _timer?.cancel();
+    _timer = Timer(MotionConstants.headerVisibleDuration, () {
+      setState(() => _visible = false);
+    });
+  }
+
+  void _open() {
+    setState(() => _visible = true);
+    _restartTimer();
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedSwitcher(
+      duration: MotionConstants.headerTransitionDuration,
+      switchInCurve: Curves.easeOut,
+      switchOutCurve: Curves.easeIn,
+      layoutBuilder: (current, previous) => Stack(
+        alignment: Alignment.topRight,
+        children: [
+          for (final child in previous)
+            ExcludeFocus(
+              child: ExcludeSemantics(child: IgnorePointer(child: child)),
+            ),
+          ?current,
+        ],
+      ),
+      child: _visible
+          ? MouseRegion(
+              onEnter: (_) => _timer?.cancel(),
+              onExit: (_) {
+                if (_visible) _restartTimer();
+              },
+              child: widget.bar,
+            )
+          : widget.buildButton(_open),
+    );
   }
 }
 
