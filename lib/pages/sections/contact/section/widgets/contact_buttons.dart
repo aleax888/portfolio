@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import 'package:portfolio/design_system/constants/spacing_constants.dart';
 import 'package:portfolio/helpers/assets/icon_enum.dart';
 import 'package:portfolio/pages/widgets/contact_option.dart';
 import 'package:portfolio/widgets/animation/animated_translation.dart';
@@ -23,8 +22,8 @@ class ContactButtons extends StatelessWidget {
       origin: .fromRight,
       scrollController: scrollController,
       child: CustomColumn(
-        spacing: SpacingConstants.xs,
         children: [
+          // Email -------------------------------------------------------
           ContactOption(
             icon: ContactIcon.icon(Icons.email),
             text: "alex.maglio.neyra.herrada@gmail.com",
@@ -39,14 +38,18 @@ class ContactButtons extends StatelessWidget {
               ),
             ),
           ),
+
+          // WhatsApp -------------------------------------------------------
           ContactOption(
             icon: ContactIcon.asset(IconEnum.whatsapp.path),
-            text: "+51 967 746 185",
+            text: "(+51) 967 746 185",
             color: Colors.green,
             onTap: () => _launchUrl(
               Uri.parse("https://wa.me/51967746185?text=Hola%20Alex%20..."),
             ),
           ),
+
+          // LinkedIn -------------------------------------------------------
           ContactOption(
             icon: ContactIcon.asset(IconEnum.linkedin.path),
             text: "Alex Maglio Neyra Herrada",
@@ -57,6 +60,8 @@ class ContactButtons extends StatelessWidget {
               ),
             ),
           ),
+
+          // GitHub -------------------------------------------------------
           ContactOption(
             icon: ContactIcon.asset(IconEnum.github.path),
             text: "aleax888",

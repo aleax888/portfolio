@@ -64,39 +64,46 @@ class _ContactOptionState extends State<ContactOption> {
     return PressableWidget(
       onTap: widget.onTap,
       child: CustomContainer(
-        hoverColor: widget.color,
         padding: const EdgeInsets.symmetric(
-          horizontal: SpacingConstants.xs,
-          vertical: SpacingConstants.xxs,
+          horizontal: SpacingConstants.m,
+          vertical: SpacingConstants.xs,
         ),
+        hoverColor: widget.color,
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisAlignment: .spaceBetween,
+          crossAxisAlignment: .center,
           children: [
             Expanded(
               child: Row(
-                spacing: SpacingConstants.xs,
+                spacing: SpacingConstants.s,
+                crossAxisAlignment: .center,
                 children: [
+                  // Icon -------------------------------------------------------
                   _buildIcon(),
+
+                  // Text -------------------------------------------------------
                   Expanded(
                     child: Text(
                       widget.text,
-                      softWrap: true,
+                      overflow: .ellipsis,
                       style: TextStyle(
                         color: TextColorConstants.light,
                         fontSize: TextSizeConstants.s,
                         fontWeight: TextWeightConstants.regular,
+                        fontFamily: TextFamilyConstants.secondary,
                       ),
                     ),
                   ),
                 ],
               ),
             ),
+
+            // Copy button -------------------------------------------------------
             IconButton(
               icon: const Icon(Icons.copy),
               color: TextColorConstants.light,
-              onPressed: () async {
-                await Clipboard.setData(ClipboardData(text: widget.text));
-              },
+              onPressed: () async =>
+                  await Clipboard.setData(ClipboardData(text: widget.text)),
             ),
           ],
         ),

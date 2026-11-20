@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import 'package:portfolio/design_system/constants/spacing_constants.dart';
 import 'package:portfolio/design_system/extensions/context_extensions.dart';
 import 'package:portfolio/design_system/utils/responsive_font_size.dart';
 import 'package:portfolio/design_system/constants/color_constants.dart';
@@ -15,53 +14,34 @@ class ContactMessage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final size = ResponsiveFontSize.logarithmic(
-      TextSizeConstants.contactHeadlineMax,
-      context.viewportSize,
+    final size = ResponsiveFontSize.logarithmic(150, context.viewportSize);
+    final style = TextStyle(
+      height: 0.7,
+      color: TextColorConstants.light,
+      fontSize: size,
+      fontFamily: TextFamilyConstants.primary,
+      fontWeight: TextWeightConstants.regular,
     );
     return AnimatedTranslation(
       origin: .fromLeft,
       scrollController: scrollController,
       child: Align(
-        alignment: Alignment.centerLeft,
-        child: FittedBox(
-          fit: BoxFit.scaleDown,
-          alignment: Alignment.centerLeft,
-          child: CustomColumn(
-            spacing: SpacingConstants.xxs,
-            children: [
-              Text(
-                "LET'S",
-                style: TextStyle(
-                  height: 0.7,
-                  fontFamily: TextFamilyConstants.primary,
-                  color: TextColorConstants.light,
-                  fontSize: size,
-                  fontWeight: TextWeightConstants.regular,
-                ),
-              ),
-              OutlinedText(
-                text: "WORK",
-                height: 0.7,
-                fillColor: Colors.transparent,
-                fontFamily: TextFamilyConstants.primary,
-                strokeColor: ColorPaletteConstants.tertiary,
-                strokeWidth: 1,
-                fontSize: size,
-                fontWeight: TextWeightConstants.black,
-              ),
-              Text(
-                "TOGETHER",
-                style: TextStyle(
-                  height: 0.7,
-                  fontFamily: TextFamilyConstants.primary,
-                  color: TextColorConstants.light,
-                  fontSize: size,
-                  fontWeight: TextWeightConstants.regular,
-                ),
-              ),
-            ],
-          ),
+        alignment: .centerLeft,
+        child: CustomColumn(
+          children: [
+            Text("LET'S", style: style),
+            OutlinedText(
+              text: "WORK",
+              height: 0.7,
+              fillColor: Colors.transparent,
+              strokeWidth: 1,
+              strokeColor: ColorPaletteConstants.tertiary,
+              fontSize: size,
+              fontWeight: TextWeightConstants.black,
+              fontFamily: TextFamilyConstants.primary,
+            ),
+            Text("TOGETHER", style: style),
+          ],
         ),
       ),
     );

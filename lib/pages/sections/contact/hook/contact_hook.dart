@@ -16,13 +16,10 @@ class ContactHook extends StatelessWidget {
       text: 'Want to start a new project?',
       textAlign: .center,
       textStyle: TextStyle(
-        fontFamily: TextFamilyConstants.primary,
         color: TextColorConstants.light,
-        fontSize: ResponsiveFontSize.linear(
-          TextSizeConstants.contactHeadlineMax,
-          context.viewportSize,
-        ),
+        fontSize: ResponsiveFontSize.exponential(200, context.viewportSize),
         fontWeight: TextWeightConstants.bold,
+        fontFamily: TextFamilyConstants.primary,
       ),
     );
   }

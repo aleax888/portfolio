@@ -12,7 +12,6 @@ import 'package:portfolio/pages/sections/projects/projects_section.dart';
 import 'package:portfolio/pages/sections/stack/slider/tech_stack_slider.dart';
 import 'package:portfolio/pages/widgets/logo.dart';
 import 'package:portfolio/widgets/layout/custom_appbar/custom_app_bar.dart';
-import 'package:portfolio/widgets/layout/custom_constrain.dart';
 import 'package:portfolio/widgets/layout/viewport_section.dart';
 import 'package:portfolio/widgets/scroll_driven/portfolio_scroll_view.dart';
 
@@ -107,12 +106,8 @@ class _PortfolioPageState extends State<PortfolioPage> {
                     // Contact (Section) -------------------------------------------------------
                     ViewportSection(
                       key: _contactKey,
-                      child: Center(
-                        child: CustomConstrain(
-                          child: ContactSection(
-                            scrollController: _scrollController,
-                          ),
-                        ),
+                      child: ContactSection(
+                        scrollController: _scrollController,
                       ),
                     ),
                   ],
