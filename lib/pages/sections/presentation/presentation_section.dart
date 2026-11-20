@@ -30,7 +30,7 @@ class PresentationSection extends StatelessWidget {
                 style: TextStyle(
                   color: TextColorConstants.light,
                   fontSize: ResponsiveFontSize.linear(
-                    TextSizeConstants.marquee,
+                    600,
                     context.viewportSize,
                   ),
                   fontFamily: TextFamilyConstants.primary,

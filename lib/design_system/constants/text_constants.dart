@@ -3,13 +3,6 @@ import 'dart:ui';
 import 'package:portfolio/design_system/constants/color_constants.dart';
 
 class TextSizeConstants {
-  static const double contactHeadlineMax = 150;
-  static const double sectionNumberMax = 120;
-
-  static const double marquee = 580;
-  static const double displayNumber = 110;
-  static const double platformLabel = 100;
-  static const double statistic = 80;
   static const double statement = 60;
   static const double xxs = 12.0;
   static const double xs = 14.0;

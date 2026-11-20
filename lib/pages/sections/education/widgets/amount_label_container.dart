@@ -29,7 +29,7 @@ class AmountLabelContainer extends StatelessWidget {
                 height: 0.9,
                 color: ColorPaletteConstants.quinary,
                 fontSize: ResponsiveFontSize.logarithmic(
-                  TextSizeConstants.displayNumber,
+                  100,
                   context.viewportSize,
                 ),
                 fontFamily: TextFamilyConstants.primary,

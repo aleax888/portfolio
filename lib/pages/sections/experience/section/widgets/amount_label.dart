@@ -17,7 +17,7 @@ class AmountLabel extends StatelessWidget {
     this.amountLabel = const TextStyle(
       fontFamily: TextFamilyConstants.primary,
       color: ColorPaletteConstants.tertiary,
-      fontSize: TextSizeConstants.statistic,
+      fontSize: 80,
       fontWeight: TextWeightConstants.black,
     ),
     this.labelStyle = const TextStyle(
