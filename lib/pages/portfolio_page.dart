@@ -104,7 +104,7 @@ class _PortfolioPageState extends State<PortfolioPage> {
                     ContactHook(scrollController: _scrollController),
 
                     // Contact (Section) -------------------------------------------------------
-                    ViewportSection(
+                    GrowingViewportSection(
                       key: _contactKey,
                       child: ContactSection(
                         scrollController: _scrollController,

@@ -18,26 +18,34 @@ class CrossPlatformAnimation extends StatelessWidget {
       scrollController: scrollController,
       animationPath: AnimationEnum.iPhone.path,
       child: CustomConstrain(
-        child: Column(
-          spacing: SpacingConstants.xl,
-          mainAxisAlignment: .center,
-          mainAxisSize: .min,
-          children: [
-            // iOS -------------------------------------------------------
-            Align(
-              alignment: Alignment.centerLeft,
-              child: IosWidget(scrollController: scrollController),
-            ),
+        child: LayoutBuilder(
+          builder: (context, constraints) => FittedBox(
+            fit: BoxFit.scaleDown,
+            child: SizedBox(
+              width: constraints.maxWidth,
+              child: Column(
+                spacing: SpacingConstants.xl,
+                mainAxisAlignment: .center,
+                mainAxisSize: .min,
+                children: [
+                  // iOS -------------------------------------------------------
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: IosWidget(scrollController: scrollController),
+                  ),
 
-            // Message -------------------------------------------------------
-            CrossPlatformMessage(),
+                  // Message -------------------------------------------------------
+                  CrossPlatformMessage(),
 
-            // Android -------------------------------------------------------
-            Align(
-              alignment: Alignment.centerRight,
-              child: AndroidWidget(scrollController: scrollController),
+                  // Android -------------------------------------------------------
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: AndroidWidget(scrollController: scrollController),
+                  ),
+                ],
+              ),
             ),
-          ],
+          ),
         ),
       ),
     );

@@ -1,14 +1,16 @@
 import 'package:flutter/gestures.dart';
 import 'package:portfolio/widgets/layout/custom_appbar/custom_app_bar.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'support/portfolio_fonts.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:portfolio/main.dart';
 import 'package:portfolio/pages/sections/contact/section/contact_section.dart';
 import 'package:portfolio/pages/sections/presentation/presentation_section.dart';
+import 'package:portfolio/widgets/content/split_view.dart';
+import 'package:portfolio/design_system/constants/spacing_constants.dart';
 import 'package:portfolio/widgets/layout/viewport_section.dart';
 import 'package:portfolio/widgets/layout/growing_viewport_section.dart';
-import 'package:portfolio/pages/portfolio_page.dart';
+import 'package:portfolio/pages/sections/projects/projects_section.dart';
 import 'package:portfolio/pages/sections/education/education_section.dart';
 import 'package:portfolio/pages/sections/experience/section/experience_section.dart';
 import 'package:portfolio/pages/sections/experience/animation/cross_platform_animation.dart';
@@ -20,17 +22,7 @@ import 'package:portfolio/widgets/scroll_driven/portfolio_scroll_view.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
-  setUpAll(() async {
-    for (final entry in {
-      'BebasNeue': 'bebas_neue',
-      'FragmentMono': 'fragment_mono',
-      'Inter': 'inter',
-    }.entries) {
-      final loader = FontLoader(entry.key)
-        ..addFont(rootBundle.load('assets/fonts/${entry.value}_regular.ttf'));
-      await loader.load();
-    }
-  });
+  setUpAll(loadPortfolioFonts);
 
   for (final size in [
     const Size(390, 844),
@@ -49,25 +41,15 @@ void main() {
         tester.view.devicePixelRatio = 1;
         tester.view.physicalSize = size;
         addTearDown(tester.view.reset);
-        await tester.pumpWidget(
-          MaterialApp(
-            home: Scaffold(
-              body: Builder(
-                builder: (context) => MediaQuery(
-                  data: MediaQuery.of(
-                    context,
-                  ).copyWith(textScaler: TextScaler.linear(scale)),
-                  child: const PortfolioPage(),
-                ),
-              ),
-            ),
-          ),
-        );
+        tester.platformDispatcher.textScaleFactorTestValue = scale;
+        addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
+        await tester.pumpWidget(const MyApp());
         await tester.pump();
         Finder owner(Type content, Type wrapper) => find.ancestor(
           of: find.byType(content),
           matching: find.byType(wrapper),
         );
+        expect(owner(ProjectsSection, GrowingViewportSection), findsOneWidget);
         for (final section in [PresentationSection, EducationSection]) {
           final fixed = owner(section, ViewportSection);
           expect(fixed, findsOneWidget);
@@ -101,10 +83,20 @@ void main() {
           expect(owner(scene, ViewportSection), findsNothing);
           expect(owner(scene, GrowingViewportSection), findsNothing);
         }
-        final contactWidth = tester.getSize(find.byType(ContactSection)).width;
+        final contactWidth = tester
+            .getSize(
+              find.descendant(
+                of: find.byType(ContactSection),
+                matching: find.byType(SplitView),
+              ),
+            )
+            .width;
         expect(
           contactWidth,
-          size.width.clamp(0.0, LayoutConstants.contentWidth),
+          (size.width - 2 * SpacingConstants.l).clamp(
+            0.0,
+            LayoutConstants.contentWidth,
+          ),
         );
         final controller = tester
             .widget<PortfolioScrollView>(find.byType(PortfolioScrollView))
@@ -147,10 +139,12 @@ void main() {
       final controller = tester
           .widget<PortfolioScrollView>(find.byType(PortfolioScrollView))
           .controller;
-      expect(
-        controller.offset,
-        closeTo(controller.position.maxScrollExtent, 1),
-      );
+      expect(tester.getTopLeft(find.byType(ContactSection)).dy, closeTo(0, 1));
+      // A short viewport can show only the beginning of the contact section.
+      if (controller.position.extentAfter > 1) {
+        await tester.dragFrom(const Offset(350, 260), const Offset(0, -230));
+        await tester.pump(const Duration(seconds: 2));
+      }
       expect(find.text('aleax888').hitTestable(), findsOneWidget);
       expect(tester.takeException(), isNull);
     });

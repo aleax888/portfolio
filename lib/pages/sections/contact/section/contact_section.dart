@@ -26,13 +26,10 @@ class ContactSection extends StatelessWidget {
             ),
 
             // Content -------------------------------------------------------
-            Expanded(
-              child: SplitView(
-                split: 0.6,
-                expandBottom: true,
-                left: ContactMessage(scrollController: scrollController),
-                right: ContactButtons(scrollController: scrollController),
-              ),
+            SplitView(
+              split: 0.6,
+              left: ContactMessage(scrollController: scrollController),
+              right: ContactButtons(scrollController: scrollController),
             ),
           ],
         ),
