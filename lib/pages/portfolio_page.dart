@@ -96,12 +96,8 @@ class _PortfolioPageState extends State<PortfolioPage> {
                     // Education (Section) -------------------------------------------------------
                     ViewportSection(
                       key: _educationKey,
-                      child: Center(
-                        child: CustomConstrain(
-                          child: EducationSection(
-                            scrollController: _scrollController,
-                          ),
-                        ),
+                      child: EducationSection(
+                        scrollController: _scrollController,
                       ),
                     ),
 

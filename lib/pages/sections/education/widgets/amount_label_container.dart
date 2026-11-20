@@ -18,35 +18,35 @@ class AmountLabelContainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CustomContainer(
-      padding: EdgeInsetsGeometry.zero,
-      child: Center(
+      child: FittedBox(
+        fit: BoxFit.scaleDown,
         child: Column(
           mainAxisAlignment: .center,
           children: [
             Text(
               amount,
               style: TextStyle(
-                height: 0.8,
-                fontFamily: TextFamilyConstants.primary,
+                height: 0.9,
                 color: ColorPaletteConstants.quinary,
-                fontSize: ResponsiveFontSize.linear(
+                fontSize: ResponsiveFontSize.logarithmic(
                   TextSizeConstants.displayNumber,
                   context.viewportSize,
                 ),
+                fontFamily: TextFamilyConstants.primary,
                 fontWeight: TextWeightConstants.black,
               ),
             ),
             Text(
               label,
               style: TextStyle(
-                height: 0.8,
-                fontFamily: TextFamilyConstants.secondary,
-                color: TextColorConstants.light.withAlpha(150),
+                height: 0.9,
+                color: TextColorConstants.gray,
                 fontSize: ResponsiveFontSize.logarithmic(
                   TextSizeConstants.m,
                   context.viewportSize,
                   minScale: 0.8,
                 ),
+                fontFamily: TextFamilyConstants.secondary,
                 fontWeight: TextWeightConstants.black,
               ),
             ),
