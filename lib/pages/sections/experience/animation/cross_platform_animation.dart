@@ -35,7 +35,7 @@ class CrossPlatformAnimation extends StatelessWidget {
                   ),
 
                   // Message -------------------------------------------------------
-                  CrossPlatformMessage(),
+                  CrossPlatformMessage(scrollController: scrollController),
 
                   // Android -------------------------------------------------------
                   Align(
