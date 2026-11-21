@@ -1,3 +1,4 @@
+import 'package:portfolio/widgets/scroll_driven/section_activity.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:portfolio/design_system/constants/motion_constants.dart';
@@ -7,6 +8,7 @@ import 'package:portfolio/widgets/effects/shadowed_container.dart';
 class ScrollDrivenAnimation extends StatefulWidget {
   final String animationPath;
   final double pixelsPerFrame;
+  final double initialFrames;
   final ScrollController scrollController;
   final Widget? child;
 
@@ -16,6 +18,7 @@ class ScrollDrivenAnimation extends StatefulWidget {
     required this.scrollController,
     this.pixelsPerFrame = MotionConstants.lottiePixelsPerFrame,
     this.child,
+    this.initialFrames = 0,
   }) : assert(pixelsPerFrame > 0);
 
   @override
@@ -23,19 +26,20 @@ class ScrollDrivenAnimation extends StatefulWidget {
 }
 
 class _ScrollDrivenAnimationState extends State<ScrollDrivenAnimation> {
-  double _frames = 0;
+  double? _frames;
 
   @override
   void didUpdateWidget(ScrollDrivenAnimation oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (widget.animationPath != oldWidget.animationPath) _frames = 0;
+    if (widget.animationPath != oldWidget.animationPath) _frames = null;
   }
 
   @override
   Widget build(BuildContext context) => PinnedScrollScene(
     controller: widget.scrollController,
-    distance: _frames * widget.pixelsPerFrame,
+    distance: (_frames ?? widget.initialFrames) * widget.pixelsPerFrame,
     builder: (context, progress) {
+      if (!SectionActivity.assetsReady(context)) return const SizedBox.expand();
       return Stack(
         fit: StackFit.expand,
         children: [

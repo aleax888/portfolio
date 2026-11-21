@@ -59,7 +59,7 @@ class _ScrollRevealState extends State<ScrollReveal>
   Widget build(BuildContext context) {
     return ScrollGeometry(
       controller: widget.scrollController,
-      onPosition: (top, position) {
+      onPosition: (top, position, _) {
         final atEnd = position.pixels >= position.maxScrollExtent;
         if (top <=
                 position.viewportDimension * (atEnd ? 1 : widget.threshold) &&

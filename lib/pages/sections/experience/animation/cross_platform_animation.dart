@@ -16,6 +16,8 @@ class CrossPlatformAnimation extends StatelessWidget {
   Widget build(BuildContext context) {
     return ScrollDrivenAnimation(
       scrollController: scrollController,
+      // Reserve the exported frame range before loading the composition.
+      initialFrames: 138.99,
       animationPath: AnimationEnum.iPhone.path,
       child: CustomConstrain(
         child: LayoutBuilder(

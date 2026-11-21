@@ -1,3 +1,4 @@
+import 'package:portfolio/widgets/scroll_driven/section_activity.dart';
 import 'package:flutter/foundation.dart';
 import 'package:portfolio/widgets/scroll_driven/desktop_scroll_controller.dart';
 import 'package:flutter/material.dart';
@@ -27,8 +28,9 @@ class PortfolioPage extends StatefulWidget {
 class _PortfolioPageState extends State<PortfolioPage> {
   // Scroll Controller -------------------------------------------------------
   final ScrollController _scrollController = switch (defaultTargetPlatform) {
-    TargetPlatform.windows || TargetPlatform.macOS || TargetPlatform.linux =>
-      DesktopScrollController(),
+    TargetPlatform.windows ||
+    TargetPlatform.macOS ||
+    TargetPlatform.linux => DesktopScrollController(),
     _ => ScrollController(),
   };
 
@@ -80,21 +82,32 @@ class _PortfolioPageState extends State<PortfolioPage> {
                     ),
 
                     // Cross Platform (Hook) -------------------------------------------------------
-                    CrossPlatformAnimation(scrollController: _scrollController),
+                    SectionActivity(
+                      controller: _scrollController,
+                      child: CrossPlatformAnimation(
+                        scrollController: _scrollController,
+                      ),
+                    ),
 
                     // Tech Stack (Section) -------------------------------------------------------
                     GrowingViewportSection(
                       key: _techStackKey,
-                      child: TechStackSlider(
-                        scrollController: _scrollController,
+                      child: SectionActivity(
+                        controller: _scrollController,
+                        child: TechStackSlider(
+                          scrollController: _scrollController,
+                        ),
                       ),
                     ),
 
                     // Projects (Section) -------------------------------------------------------
                     GrowingViewportSection(
                       key: _projectsKey,
-                      child: ProjectsSection(
-                        scrollController: _scrollController,
+                      child: SectionActivity(
+                        controller: _scrollController,
+                        child: ProjectsSection(
+                          scrollController: _scrollController,
+                        ),
                       ),
                     ),
 

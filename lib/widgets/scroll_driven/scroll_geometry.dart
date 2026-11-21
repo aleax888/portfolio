@@ -11,7 +11,7 @@ class ScrollGeometry extends SingleChildRenderObjectWidget {
   });
 
   final ScrollController controller;
-  final void Function(double, ScrollPosition) onPosition;
+  final void Function(double, ScrollPosition, double) onPosition;
 
   @override
   RenderProxyBox createRenderObject(BuildContext context) =>
@@ -30,13 +30,14 @@ class _ScrollGeometryBox extends RenderProxyBox {
   _ScrollGeometryBox(this.controller, this.onPosition);
 
   ScrollController controller;
-  void Function(double, ScrollPosition) onPosition;
+  void Function(double, ScrollPosition, double) onPosition;
   double? anchor;
+  double boxHeight = 0;
   bool scheduled = false;
 
   void configure(
     ScrollController next,
-    void Function(double, ScrollPosition) callback,
+    void Function(double, ScrollPosition, double) callback,
   ) {
     if (controller != next) {
       if (attached) controller.removeListener(_onScroll);
@@ -65,7 +66,7 @@ class _ScrollGeometryBox extends RenderProxyBox {
     if (anchor == null || controller.positions.length != 1) return;
     final position = controller.position;
     if (position.hasContentDimensions) {
-      onPosition(anchor! - position.pixels, position);
+      onPosition(anchor! - position.pixels, position, boxHeight);
     }
   }
 
@@ -80,6 +81,7 @@ class _ScrollGeometryBox extends RenderProxyBox {
       if (!attached || !hasSize || controller.positions.length != 1) return;
       final viewport = RenderAbstractViewport.maybeOf(this);
       if (viewport == null) return;
+      boxHeight = size.height;
       anchor = viewport.getOffsetToReveal(this, 0).offset;
       _onScroll();
     });

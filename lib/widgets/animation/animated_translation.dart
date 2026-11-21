@@ -129,7 +129,7 @@ class _AnimatedTranslationState extends State<AnimatedTranslation>
     if (scroll == null) return transition;
     return ScrollGeometry(
       controller: scroll,
-      onPosition: (top, position) {
+      onPosition: (top, position, _) {
         final threshold = position.pixels >= position.maxScrollExtent
             ? 1.0
             : widget.threshold;

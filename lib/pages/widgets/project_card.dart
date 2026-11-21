@@ -1,3 +1,4 @@
+import 'package:portfolio/widgets/scroll_driven/section_activity.dart';
 import 'package:flutter/material.dart';
 
 import 'package:portfolio/widgets/layout/viewport_orientation_builder.dart';
@@ -45,7 +46,9 @@ class ProjectCard extends StatelessWidget {
             builder: (context, orientation) {
               final image = AspectRatio(
                 aspectRatio: 1.6,
-                child: Image.asset(imagePath, fit: .cover),
+                child: SectionActivity.assetsReady(context)
+                    ? Image.asset(imagePath, fit: .cover)
+                    : const SizedBox.shrink(),
               );
               final content = Padding(
                 padding: const EdgeInsets.all(SpacingConstants.m),

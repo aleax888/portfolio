@@ -28,7 +28,7 @@ class _PinnedScrollSceneState extends State<PinnedScrollScene> {
     final travel = _travel.clamp(0.0, widget.distance);
     return ScrollGeometry(
       controller: widget.controller,
-      onPosition: (top, position) {
+      onPosition: (top, position, _) {
         final travel = (-top).clamp(0.0, widget.distance);
         if (_travel != travel || _height != position.viewportDimension) {
           setState(() {

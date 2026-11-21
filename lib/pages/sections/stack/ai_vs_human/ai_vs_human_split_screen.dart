@@ -1,3 +1,5 @@
+import 'package:portfolio/widgets/scroll_driven/section_activity.dart';
+import 'package:portfolio/design_system/constants/layout_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:portfolio/pages/sections/stack/ai_vs_human/widgets/ai_side.dart';
 import 'package:portfolio/pages/sections/stack/ai_vs_human/widgets/human_side.dart';
@@ -9,6 +11,12 @@ class AiVsHumanSplitScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (!SectionActivity.assetsReady(context)) {
+      return const SizedBox(
+        width: double.infinity,
+        height: LayoutConstants.splitPanelHeight,
+      );
+    }
     return SplitOverlapView(
       leftChild: AiSide(scrollController: scrollController),
       rightChild: HumanSide(scrollController: scrollController),

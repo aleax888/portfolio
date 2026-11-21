@@ -50,7 +50,7 @@ class _ScrollDrivenSliderState extends State<ScrollDrivenSlider> {
             gaps * widget.itemSpacing;
         return ScrollGeometry(
           controller: widget.scrollController,
-          onPosition: (top, position) {
+          onPosition: (top, position, _) {
             final span = position.viewportDimension * widget.threshold;
             if (span <= 0) return;
             _progress.value = ((position.viewportDimension - top) / span).clamp(

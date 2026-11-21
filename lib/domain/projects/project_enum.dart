@@ -4,7 +4,7 @@ enum ProjectEnum {
   textArt;
 
   String get image =>
-      'assets/images/projects/${name.toLowerCase().replaceAll(' ', '_')}.png';
+      'assets/images/projects/${name.toLowerCase().replaceAll(' ', '_')}.webp';
 
   String get name {
     switch (this) {

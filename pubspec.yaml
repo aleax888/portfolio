@@ -26,16 +26,18 @@ flutter:
     - assets/animations/
 
     # Images
-    - assets/images/certifications/platzi/
-    - assets/images/certifications/uni/
     - assets/images/debug/
-    - assets/images/degrees/ucsp/
-    - assets/images/degrees/unsa/
     - assets/images/logos/education/
     - assets/images/logos/other/
     - assets/images/logos/tech_stack/
-    - assets/images/me/
-    - assets/images/projects/
+    - assets/images/me/ai.webp
+    - assets/images/me/as_paint.jpeg
+    - assets/images/me/casual.png
+    - assets/images/me/matrix.png
+    - assets/images/me/software.webp
+    - assets/images/projects/gymflow.webp
+    - assets/images/projects/led_panel.webp
+    - assets/images/projects/text_art.webp
 
     # Icons
     - assets/icons/

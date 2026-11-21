@@ -70,6 +70,13 @@ void main() {
       ];
       final rows = find.byType(ScrollDrivenSlider);
       expect(rows, findsNWidgets(catalogs.length));
+      expect(
+        find.descendant(of: rows.first, matching: find.byType(Image)),
+        findsNothing,
+      );
+      await tester.ensureVisible(rows.first);
+      await tester.pump();
+      await tester.pump();
       final backs = <Widget>[];
       for (final (index, skills) in catalogs.indexed) {
         final cards = tester

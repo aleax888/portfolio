@@ -1,3 +1,4 @@
+import 'package:portfolio/widgets/scroll_driven/section_activity.dart';
 import 'package:flutter/material.dart';
 
 import 'package:portfolio/design_system/extensions/context_extensions.dart';
@@ -56,7 +57,9 @@ class TechStackSlider extends StatelessWidget {
                 items: stack.value
                     .map(
                       (e) => FlipCard(
-                        front: Image.asset(e.image),
+                        front: SectionActivity.assetsReady(context)
+                            ? Image.asset(e.image)
+                            : const SizedBox.shrink(),
                         back: FittedBox(
                           child: Center(
                             child: Text(
