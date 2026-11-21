@@ -1,7 +1,6 @@
 import 'package:portfolio/widgets/scroll_driven/section_activity.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
-import 'package:portfolio/design_system/constants/motion_constants.dart';
 import 'package:portfolio/widgets/scroll_driven/pinned_scroll_scene.dart';
 import 'package:portfolio/widgets/effects/shadowed_container.dart';
 
@@ -16,7 +15,7 @@ class ScrollDrivenAnimation extends StatefulWidget {
     super.key,
     required this.animationPath,
     required this.scrollController,
-    this.pixelsPerFrame = MotionConstants.lottiePixelsPerFrame,
+    this.pixelsPerFrame = 16.0,
     this.child,
     this.initialFrames = 0,
   }) : assert(pixelsPerFrame > 0);

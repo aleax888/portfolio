@@ -14,7 +14,7 @@ class ScrollReveal extends StatefulWidget {
     super.key,
     required this.child,
     required this.scrollController,
-    this.duration = MotionConstants.revealDuration,
+    this.duration = MotionConstants.verySlow,
     this.threshold = 0.5,
     this.slideBegin = const Offset(0, 0.06),
     this.curve = Curves.easeOut,

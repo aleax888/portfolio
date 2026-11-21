@@ -41,7 +41,7 @@ class _AdaptivePortfolioAppBarState extends State<AdaptivePortfolioAppBar> {
       setState(() => _selected = item);
       Scrollable.ensureVisible(
         target,
-        duration: MotionConstants.navigationDuration,
+        duration: MotionConstants.slow,
         curve: Curves.easeInOutCubic,
       );
     }
@@ -128,7 +128,7 @@ class _AdaptivePortfolioAppBarState extends State<AdaptivePortfolioAppBar> {
       barrierDismissible: true,
       barrierLabel: 'Menú',
       barrierColor: Colors.black54,
-      transitionDuration: const Duration(milliseconds: 250),
+      transitionDuration: MotionConstants.fast,
       pageBuilder: (context, anim1, anim2) {
         return Align(
           alignment: Alignment.centerRight,
@@ -178,7 +178,7 @@ class _DesktopHeaderState extends State<_DesktopHeader> {
 
   void _restartTimer() {
     _timer?.cancel();
-    _timer = Timer(MotionConstants.headerVisibleDuration, () {
+    _timer = Timer(const Duration(seconds: 2), () {
       setState(() => _visible = false);
     });
   }
@@ -197,7 +197,7 @@ class _DesktopHeaderState extends State<_DesktopHeader> {
   @override
   Widget build(BuildContext context) {
     return AnimatedSwitcher(
-      duration: MotionConstants.headerTransitionDuration,
+      duration: MotionConstants.fast,
       switchInCurve: Curves.easeOut,
       switchOutCurve: Curves.easeIn,
       layoutBuilder: (current, previous) => Stack(

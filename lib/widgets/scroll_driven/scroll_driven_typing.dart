@@ -1,7 +1,6 @@
 import 'package:flutter/widgets.dart';
 
 import 'package:portfolio/design_system/constants/spacing_constants.dart';
-import 'package:portfolio/design_system/constants/motion_constants.dart';
 import 'package:portfolio/widgets/scroll_driven/pinned_scroll_scene.dart';
 
 class ScrollDrivenTyping extends StatelessWidget {
@@ -9,7 +8,7 @@ class ScrollDrivenTyping extends StatelessWidget {
     super.key,
     required this.text,
     required this.scrollController,
-    this.pixelsPerCharacter = MotionConstants.typingPixelsPerCharacter,
+    this.pixelsPerCharacter = 70.0,
     this.textStyle,
     this.textAlign = TextAlign.start,
   }) : assert(pixelsPerCharacter > 0);

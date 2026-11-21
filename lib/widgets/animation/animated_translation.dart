@@ -31,7 +31,7 @@ class AnimatedTranslation extends StatefulWidget {
     super.key,
     required this.child,
     required this.origin,
-    this.duration = MotionConstants.translationDuration,
+    this.duration = MotionConstants.verySlow,
     this.delay = Duration.zero,
     this.curve = Curves.easeOut,
     this.distance = 1.5,

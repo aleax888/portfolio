@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:portfolio/design_system/constants/motion_constants.dart';
 
 class PressableWidget extends StatefulWidget {
   final Widget child;
@@ -11,7 +12,7 @@ class PressableWidget extends StatefulWidget {
     required this.child,
     this.onTap,
     this.pressedScale = 0.95,
-    this.duration = const Duration(milliseconds: 100),
+    this.duration = MotionConstants.veryFast,
   });
 
   @override

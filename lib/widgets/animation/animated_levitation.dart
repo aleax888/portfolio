@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:portfolio/design_system/constants/motion_constants.dart';
 
 // ---------------------------------------------------------------------------
 // WIDGET: AnimatedLevitation
@@ -49,7 +48,7 @@ class AnimatedLevitation extends StatefulWidget {
     this.amplitude = 0.1,
 
     /// Duración de un ciclo completo (arriba, abajo, regreso).
-    this.duration = MotionConstants.levitationDuration,
+    this.duration = const Duration(milliseconds: 1800),
 
     /// Retraso antes de que comience la animación.
     /// Se ignora si se proporciona un [controller] externo.

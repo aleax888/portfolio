@@ -1,7 +1,6 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:portfolio/design_system/constants/motion_constants.dart';
 
 enum MarqueeDirection { left, right }
 
@@ -11,7 +10,7 @@ class MarqueeText extends StatefulWidget {
     super.key,
     required this.text,
     this.style,
-    this.speedPixelsPerSecond = MotionConstants.marqueePixelsPerSecond,
+    this.speedPixelsPerSecond = 48.0,
     this.initialDelay = Duration.zero,
     this.startOffsetFraction = 1,
     this.direction = MarqueeDirection.left,
@@ -66,8 +65,10 @@ class _MarqueeTextState extends State<MarqueeText>
   }
 
   void _syncTicker() {
-    final running = widget.text.isNotEmpty && widget.speedPixelsPerSecond > 0
-        && TickerMode.of(context);
+    final running =
+        widget.text.isNotEmpty &&
+        widget.speedPixelsPerSecond > 0 &&
+        TickerMode.of(context);
     if (running && !_ticker.isActive) {
       _lastElapsed = Duration.zero;
       _ticker.start();
@@ -87,7 +88,8 @@ class _MarqueeTextState extends State<MarqueeText>
       if (!mounted) return;
       final row = _rowKey.currentContext?.findRenderObject() as RenderBox?;
       final panel = context.findRenderObject() as RenderBox?;
-      if (row == null || !row.hasSize || panel == null || !panel.hasSize) return;
+      if (row == null || !row.hasSize || panel == null || !panel.hasSize)
+        return;
       final width = panel.size.width;
       final cycle = row.size.width - width;
       if (cycle == _cycle && width == _panelWidth) return;
@@ -95,7 +97,8 @@ class _MarqueeTextState extends State<MarqueeText>
       final originShift = widget.direction == MarqueeDirection.left
           ? width - _panelWidth
           : (cycle - width) - (_cycle - _panelWidth);
-      _offset.value = _cycle == 0 ? _initialOffset(width)
+      _offset.value = _cycle == 0
+          ? _initialOffset(width)
           : (_offset.value + originShift).clamp(0.0, cycle);
       _panelWidth = width;
       _cycle = cycle;
@@ -113,44 +116,66 @@ class _MarqueeTextState extends State<MarqueeText>
     }
     if (delta == Duration.zero) return;
     final seconds = delta.inMicroseconds / Duration.microsecondsPerSecond;
-    _offset.value = (_offset.value + widget.speedPixelsPerSecond * seconds) % _cycle;
+    _offset.value =
+        (_offset.value + widget.speedPixelsPerSecond * seconds) % _cycle;
   }
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(builder: (context, constraints) {
-      final width = constraints.hasBoundedWidth
-          ? constraints.maxWidth : MediaQuery.sizeOf(context).width;
-      _measureAfterLayout();
-      final left = widget.direction == MarqueeDirection.left;
-      return SizedBox(width: width, child: ClipRect(child: OverflowBox(
-        fit: OverflowBoxFit.deferToChild,
-        alignment: left ? Alignment.centerLeft : Alignment.centerRight,
-        minWidth: 0, maxWidth: double.infinity,
-        minHeight: 0, maxHeight: double.infinity,
-        child: ValueListenableBuilder<double>(
-          valueListenable: _offset,
-          builder: (context, offset, child) {
-            final travel = _cycle == 0 ? _initialOffset(width) : offset;
-            return Transform.translate(offset: Offset(left ? -travel : travel, 0), child: child);
-          },
-          child: NotificationListener<SizeChangedLayoutNotification>(
-            onNotification: (_) {
-              _measureAfterLayout();
-              return false;
-            },
-            child: SizeChangedLayoutNotifier(child: Row(
-              key: _rowKey, mainAxisSize: MainAxisSize.min,
-              children: [
-                SizedBox(width: width),
-                Text(widget.text, style: widget.style, maxLines: 1, softWrap: false),
-                SizedBox(width: width),
-              ],
-            )),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final width = constraints.hasBoundedWidth
+            ? constraints.maxWidth
+            : MediaQuery.sizeOf(context).width;
+        _measureAfterLayout();
+        final left = widget.direction == MarqueeDirection.left;
+        return SizedBox(
+          width: width,
+          child: ClipRect(
+            child: OverflowBox(
+              fit: OverflowBoxFit.deferToChild,
+              alignment: left ? Alignment.centerLeft : Alignment.centerRight,
+              minWidth: 0,
+              maxWidth: double.infinity,
+              minHeight: 0,
+              maxHeight: double.infinity,
+              child: ValueListenableBuilder<double>(
+                valueListenable: _offset,
+                builder: (context, offset, child) {
+                  final travel = _cycle == 0 ? _initialOffset(width) : offset;
+                  return Transform.translate(
+                    offset: Offset(left ? -travel : travel, 0),
+                    child: child,
+                  );
+                },
+                child: NotificationListener<SizeChangedLayoutNotification>(
+                  onNotification: (_) {
+                    _measureAfterLayout();
+                    return false;
+                  },
+                  child: SizeChangedLayoutNotifier(
+                    child: Row(
+                      key: _rowKey,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        SizedBox(width: width),
+                        Text(
+                          widget.text,
+                          style: widget.style,
+                          maxLines: 1,
+                          softWrap: false,
+                        ),
+                        SizedBox(width: width),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
           ),
-        ),
-      )));
-    });
+        );
+      },
+    );
   }
 
   @override
@@ -158,6 +183,5 @@ class _MarqueeTextState extends State<MarqueeText>
     _ticker.dispose();
     _offset.dispose();
     super.dispose();
-
   }
 }

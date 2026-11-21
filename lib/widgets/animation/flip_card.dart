@@ -1,6 +1,7 @@
 import 'dart:math' show pi;
 
 import 'package:flutter/material.dart';
+import 'package:portfolio/design_system/constants/motion_constants.dart';
 import 'package:portfolio/design_system/constants/color_constants.dart';
 import 'package:portfolio/design_system/constants/spacing_constants.dart';
 
@@ -42,7 +43,7 @@ class FlipCard extends StatefulWidget {
     required this.back,
     this.width = 300,
     this.height = 200,
-    this.duration = const Duration(milliseconds: 300),
+    this.duration = MotionConstants.medium,
     this.curve = Curves.easeInOut,
     this.flipAxis = FlipAxis.y,
     this.borderRadius = 16,

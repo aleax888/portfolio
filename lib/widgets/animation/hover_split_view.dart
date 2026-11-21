@@ -29,7 +29,7 @@ class SplitOverlapView extends StatefulWidget {
     required this.rightChild,
     this.initialSplitRatio = 0.5,
     this.hoveredSplitRatio = 1.0,
-    this.animationDuration = MotionConstants.splitDuration,
+    this.animationDuration = MotionConstants.verySlow,
     this.animationCurve = Curves.easeInOut,
   }) : assert(
          initialSplitRatio > 0.0 && initialSplitRatio < 1.0,
