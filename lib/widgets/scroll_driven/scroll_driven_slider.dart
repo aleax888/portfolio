@@ -26,7 +26,7 @@ class ScrollDrivenSlider extends StatefulWidget {
     super.key,
     required this.items,
     required this.scrollController,
-    this.offset = 0.1,
+    this.offset = 0.0,
     this.threshold = 0.9,
     this.itemSize = 200.0,
     this.itemSpacing = 16.0,

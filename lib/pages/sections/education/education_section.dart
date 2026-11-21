@@ -70,6 +70,7 @@ final class EducationSection extends StatelessWidget {
       ),
       // Hook -------------------------------------------------------
       b: CustomContainer(
+        padding: const EdgeInsets.all(SpacingConstants.xs),
         child: FittedBox(
           fit: BoxFit.scaleDown,
           child: OutlinedText(
@@ -86,6 +87,7 @@ final class EducationSection extends StatelessWidget {
       ),
       // Hook -------------------------------------------------------
       c: CustomContainer(
+        padding: const EdgeInsets.all(SpacingConstants.xs),
         child: FittedBox(
           fit: BoxFit.scaleDown,
           child: OutlinedText(

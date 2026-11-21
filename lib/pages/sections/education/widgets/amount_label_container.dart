@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:portfolio/design_system/constants/spacing_constants.dart';
 
 import 'package:portfolio/design_system/extensions/context_extensions.dart';
 import 'package:portfolio/design_system/utils/responsive_font_size.dart';
@@ -18,6 +19,7 @@ class AmountLabelContainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CustomContainer(
+      padding: const EdgeInsets.all(SpacingConstants.xs),
       child: FittedBox(
         fit: BoxFit.scaleDown,
         child: Column(

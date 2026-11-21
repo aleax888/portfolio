@@ -38,7 +38,8 @@ class SplitView extends StatelessWidget {
   Widget build(BuildContext context) {
     return ViewportOrientationBuilder(
       builder: (context, orientation) => LayoutBuilder(
-        builder: (context, constraints) => orientation == .portrait
+        builder: (context, constraints) =>
+            orientation == .portrait || constraints.maxWidth <= gap
             ? _buildColumn(expandBottom && constraints.hasBoundedHeight)
             : _buildRow(constraints.maxWidth),
       ),
