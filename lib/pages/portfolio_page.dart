@@ -1,3 +1,5 @@
+import 'package:flutter/foundation.dart';
+import 'package:portfolio/widgets/scroll_driven/desktop_scroll_controller.dart';
 import 'package:flutter/material.dart';
 
 import 'package:portfolio/design_system/constants/spacing_constants.dart';
@@ -24,7 +26,11 @@ class PortfolioPage extends StatefulWidget {
 
 class _PortfolioPageState extends State<PortfolioPage> {
   // Scroll Controller -------------------------------------------------------
-  final _scrollController = ScrollController();
+  final ScrollController _scrollController = switch (defaultTargetPlatform) {
+    TargetPlatform.windows || TargetPlatform.macOS || TargetPlatform.linux =>
+      DesktopScrollController(),
+    _ => ScrollController(),
+  };
 
   // Section Keys -------------------------------------------------------
   final _presentationKey = GlobalKey();
