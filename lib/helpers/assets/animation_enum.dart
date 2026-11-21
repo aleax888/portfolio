@@ -1,22 +1,13 @@
 enum AnimationEnum {
-  iPhone,
-  bluePhone,
-  purplePhone,
-  purpleSimbol;
+  iPhone('iPhone', 'iphone.json'),
+  bluePhone('Blue Phone', 'blue_phone.json'),
+  purplePhone('Purple Phone', 'purple_phone.json'),
+  purpleSimbol('Purple Simbol', 'purple_simbol.json');
 
-  String get path =>
-      'assets/animations/${name.toLowerCase().replaceAll(' ', '_')}.json';
+  const AnimationEnum(this.name, this.fileName);
 
-  String get name {
-    switch (this) {
-      case AnimationEnum.iPhone:
-        return 'iPhone';
-      case AnimationEnum.bluePhone:
-        return 'Blue Phone';
-      case AnimationEnum.purplePhone:
-        return 'Purple Phone';
-      case AnimationEnum.purpleSimbol:
-        return 'Purple Simbol';
-    }
-  }
+  final String name;
+  final String fileName;
+
+  String get path => 'assets/animations/$fileName';
 }

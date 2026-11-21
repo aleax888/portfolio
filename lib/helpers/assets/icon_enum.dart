@@ -1,19 +1,12 @@
 enum IconEnum {
-  github,
-  linkedin,
-  whatsapp;
+  github('GitHub', 'github.png'),
+  linkedin('LinkedIn', 'linkedin.png'),
+  whatsapp('WhatsApp', 'whatsapp.png');
 
-  String get path =>
-      'assets/icons/${name.toLowerCase().replaceAll(' ', '_')}.png';
+  const IconEnum(this.name, this.fileName);
 
-  String get name {
-    switch (this) {
-      case IconEnum.github:
-        return 'GitHub';
-      case IconEnum.linkedin:
-        return 'LinkedIn';
-      case IconEnum.whatsapp:
-        return 'WhatsApp';
-    }
-  }
+  final String name;
+  final String fileName;
+
+  String get path => 'assets/icons/$fileName';
 }

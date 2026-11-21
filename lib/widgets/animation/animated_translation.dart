@@ -6,37 +6,21 @@ import 'package:portfolio/design_system/constants/motion_constants.dart';
 // ENUM: TranslationOrigin
 // ---------------------------------------------------------------------------
 enum TranslationOrigin {
-  fromLeft,
-  fromRight,
-  fromTop,
-  fromBottom,
-  fromTopLeft,
-  fromTopRight,
-  fromBottomLeft,
-  fromBottomRight,
+  fromLeft(Offset(-1, 0)),
+  fromRight(Offset(1, 0)),
+  fromTop(Offset(0, -1)),
+  fromBottom(Offset(0, 1)),
+  fromTopLeft(Offset(-1, -1)),
+  fromTopRight(Offset(1, -1)),
+  fromBottomLeft(Offset(-1, 1)),
+  fromBottomRight(Offset(1, 1));
+
+  const TranslationOrigin(this._direction);
+  final Offset _direction;
 }
 
 extension TranslationOriginExtension on TranslationOrigin {
-  Offset toOffset({double distance = 1.0}) {
-    switch (this) {
-      case TranslationOrigin.fromLeft:
-        return Offset(-distance, 0);
-      case TranslationOrigin.fromRight:
-        return Offset(distance, 0);
-      case TranslationOrigin.fromTop:
-        return Offset(0, -distance);
-      case TranslationOrigin.fromBottom:
-        return Offset(0, distance);
-      case TranslationOrigin.fromTopLeft:
-        return Offset(-distance, -distance);
-      case TranslationOrigin.fromTopRight:
-        return Offset(distance, -distance);
-      case TranslationOrigin.fromBottomLeft:
-        return Offset(-distance, distance);
-      case TranslationOrigin.fromBottomRight:
-        return Offset(distance, distance);
-    }
-  }
+  Offset toOffset({double distance = 1.0}) => _direction * distance;
 }
 
 // ---------------------------------------------------------------------------

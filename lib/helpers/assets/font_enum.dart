@@ -1,13 +1,10 @@
 enum FontEnum {
-  bebasNeueRegular;
+  bebasNeueRegular('Bebas Neue Regular', 'bebas_neue_regular.ttf');
 
-  String get path =>
-      'assets/fonts/${name.toLowerCase().replaceAll(' ', '_')}.ttf';
+  const FontEnum(this.name, this.fileName);
 
-  String get name {
-    switch (this) {
-      case FontEnum.bebasNeueRegular:
-        return 'Bebas Neue Regular';
-    }
-  }
+  final String name;
+  final String fileName;
+
+  String get path => 'assets/fonts/$fileName';
 }

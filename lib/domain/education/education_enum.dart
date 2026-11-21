@@ -1,52 +1,36 @@
 enum EducationEnum {
-  unsa,
-  ucsp;
+  unsa(
+    name: 'UNSA',
+    fileName: 'unsa.png',
+    fullName: 'Universidad Nacional de San Agustín',
+    description: 'Focused on AI (In progress)',
+    degree: 'Master of Science in Computer Science',
+    period: '2025 - PRESENT',
+  ),
+  ucsp(
+    name: 'UCSP',
+    fileName: 'ucsp.png',
+    fullName: 'Universidad Católica de San Pablo',
+    description: 'Focused on Software Engineering and AI',
+    degree: 'Bachelor of Science in Computer Science',
+    period: '2018 - 2023',
+  );
 
-  String get logo =>
-      'assets/images/logos/education/${name.toLowerCase().replaceAll(' ', '_')}.png';
+  const EducationEnum({
+    required this.name,
+    required this.fileName,
+    required this.fullName,
+    required this.description,
+    required this.degree,
+    required this.period,
+  });
 
-  String get name {
-    switch (this) {
-      case EducationEnum.unsa:
-        return 'UNSA';
-      case EducationEnum.ucsp:
-        return 'UCSP';
-    }
-  }
+  final String name;
+  final String fileName;
+  final String fullName;
+  final String description;
+  final String degree;
+  final String period;
 
-  String get fullName {
-    switch (this) {
-      case EducationEnum.unsa:
-        return 'Universidad Nacional de San Agustín';
-      case EducationEnum.ucsp:
-        return 'Universidad Católica de San Pablo';
-    }
-  }
-
-  String get description {
-    switch (this) {
-      case EducationEnum.unsa:
-        return 'Focused on AI (In progress)';
-      case EducationEnum.ucsp:
-        return 'Focused on Software Engineering and AI';
-    }
-  }
-
-  String get degree {
-    switch (this) {
-      case EducationEnum.unsa:
-        return 'Master of Science in Computer Science';
-      case EducationEnum.ucsp:
-        return 'Bachelor of Science in Computer Science';
-    }
-  }
-
-  String get period {
-    switch (this) {
-      case EducationEnum.unsa:
-        return '2025 - PRESENT';
-      case EducationEnum.ucsp:
-        return '2018 - 2023';
-    }
-  }
+  String get logo => 'assets/images/logos/education/$fileName';
 }

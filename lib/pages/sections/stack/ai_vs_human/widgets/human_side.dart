@@ -19,32 +19,37 @@ class HumanSide extends StatelessWidget {
       child: Stack(
         alignment: .centerEnd,
         children: [
-          CustomPadding(
-            child: Row(
-              crossAxisAlignment: .start,
-              mainAxisAlignment: .spaceBetween,
-              children: [
-                Flexible(
-                  flex: 2,
-                  child: const Text(
-                    'Creating fast, intuitive and scalable mobile experiences.',
-                    style: TextStyle(
-                      fontFamily: TextFamilyConstants.secondary,
-                      color: TextColorConstants.light,
-                      fontSize: TextSizeConstants.l,
-                      fontWeight: TextWeightConstants.regular,
-                    ),
-                    textAlign: TextAlign.start,
-                  ),
-                ),
-                Flexible(flex: 2, child: Container()),
-                Flexible(
-                  flex: 2,
-                  child: AnimatedTranslation(
-                    origin: .fromRight,
-                    scrollController: scrollController,
+          // Human Image ------------------------------------------------------
+          Positioned.fill(
+            child: AnimatedTranslation(
+              origin: .fromBottom,
+              scrollController: scrollController,
+              child: Align(
+                alignment: .bottomCenter,
+                child: Image.asset(MeEnum.software.path),
+              ),
+            ),
+          ),
+
+          // Hidden Content ------------------------------------------------------
+          Row(
+            mainAxisAlignment: .spaceBetween,
+            children: [
+              // Human Hand ------------------------------------------------------
+              Expanded(
+                flex: 1,
+                child: Image.asset(MeEnum.humanHand.path, fit: .scaleDown),
+              ),
+
+              // Title ------------------------------------------------------
+              Expanded(
+                flex: 2,
+                child: AnimatedTranslation(
+                  origin: .fromRight,
+                  scrollController: scrollController,
+                  child: CustomPadding(
                     child: Text(
-                      'Software\nEngineer',
+                      'ENGINEERING',
                       style: TextStyle(
                         fontFamily: TextFamilyConstants.primary,
                         color: ColorPaletteConstants.quaternary,
@@ -58,18 +63,8 @@ class HumanSide extends StatelessWidget {
                     ),
                   ),
                 ),
-              ],
-            ),
-          ),
-          Positioned.fill(
-            child: AnimatedTranslation(
-              origin: .fromBottom,
-              scrollController: scrollController,
-              child: Align(
-                alignment: .bottomCenter,
-                child: Image.asset(MeEnum.software.path),
               ),
-            ),
+            ],
           ),
         ],
       ),

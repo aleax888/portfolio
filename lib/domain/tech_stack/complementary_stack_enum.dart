@@ -1,51 +1,54 @@
 import 'package:flutter/material.dart';
 import 'package:portfolio/domain/tech_stack/tech_stack_item.dart';
 
-enum ComplementaryStackEnum implements TechStackItem {
-  bash,
-  cpp,
-  git,
-  github,
-  postman;
-
-  @override
-  String get image => 'assets/images/logos/tech_stack/${name.toLowerCase().replaceAll(' ', '_')}.png';
-
-  @override
-  String get description {
-    return switch (this) {
-      ComplementaryStackEnum.bash =>
+enum ComplementaryStackEnum with TechStackItem {
+  bash(
+    name: 'Bash',
+    fileName: 'bash.png',
+    description:
         'Unix shell and command language for system administration and scripting',
-      ComplementaryStackEnum.cpp =>
+    color: Color(0xFF4EAA25),
+  ),
+  cpp(
+    name: 'C++',
+    fileName: 'c++.png',
+    description:
         'High-performance programming language for systems and performance-critical applications',
-      ComplementaryStackEnum.git =>
-        'Distributed version control system for tracking code changes',
-      ComplementaryStackEnum.github =>
+    color: Color(0xFF00599C),
+  ),
+  git(
+    name: 'Git',
+    fileName: 'git.png',
+    description: 'Distributed version control system for tracking code changes',
+    color: Color(0xFFF1502F),
+  ),
+  github(
+    name: 'GitHub',
+    fileName: 'github.png',
+    description:
         'Platform for version control, collaboration, and development workflow',
-      ComplementaryStackEnum.postman =>
-        'API development and testing tool for REST and GraphQL APIs',
-    };
-  }
+    color: Color(0xFF181717),
+  ),
+  postman(
+    name: 'Postman',
+    fileName: 'postman.png',
+    description: 'API development and testing tool for REST and GraphQL APIs',
+    color: Color(0xFFFF6C37),
+  );
+
+  const ComplementaryStackEnum({
+    required this.name,
+    required this.fileName,
+    required this.description,
+    required this.color,
+  });
 
   @override
-  String get name {
-    return switch (this) {
-      ComplementaryStackEnum.bash => 'Bash',
-      ComplementaryStackEnum.cpp => 'C++',
-      ComplementaryStackEnum.git => 'Git',
-      ComplementaryStackEnum.github => 'GitHub',
-      ComplementaryStackEnum.postman => 'Postman',
-    };
-  }
-
+  final String name;
   @override
-  Color get color {
-    return switch (this) {
-      ComplementaryStackEnum.bash => const Color(0xFF4EAA25),
-      ComplementaryStackEnum.cpp => const Color(0xFF00599C),
-      ComplementaryStackEnum.git => const Color(0xFFF1502F),
-      ComplementaryStackEnum.github => const Color(0xFF181717),
-      ComplementaryStackEnum.postman => const Color(0xFFFF6C37),
-    };
-  }
+  final String fileName;
+  @override
+  final String description;
+  @override
+  final Color color;
 }

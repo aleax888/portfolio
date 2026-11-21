@@ -24,7 +24,16 @@ import 'package:portfolio/design_system/constants/spacing_constants.dart';
 // ─────────────────────────────────────────────────────────────────────────────
 
 /// Eje alrededor del cual se realizará el giro.
-enum FlipAxis { x, y }
+enum FlipAxis {
+  x(_rotateX),
+  y(_rotateY);
+
+  const FlipAxis(this._rotate);
+  final void Function(Matrix4, double) _rotate;
+
+  static void _rotateX(Matrix4 matrix, double angle) => matrix.rotateX(angle);
+  static void _rotateY(Matrix4 matrix, double angle) => matrix.rotateY(angle);
+}
 
 class FlipCard extends StatefulWidget {
   const FlipCard({
@@ -131,8 +140,8 @@ class _FlipCardState extends State<FlipCard>
 
           // Matriz de transformación 3-D según el eje configurado.
           final transform = Matrix4.identity()
-            ..setEntry(3, 2, 0.001) // perspectiva
-            .._applyRotation(widget.flipAxis, visibleAngle);
+            ..setEntry(3, 2, 0.001); // perspectiva
+          widget.flipAxis._rotate(transform, visibleAngle);
 
           return Transform(
             alignment: Alignment.center,
@@ -180,20 +189,5 @@ class _CardFace extends StatelessWidget {
       borderRadius: BorderRadius.circular(borderRadius),
       child: child,
     );
-  }
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
-// Extensión privada de Matrix4 para aplicar la rotación según el eje.
-// ─────────────────────────────────────────────────────────────────────────────
-
-extension _Matrix4Rotation on Matrix4 {
-  void _applyRotation(FlipAxis axis, double angle) {
-    switch (axis) {
-      case FlipAxis.y:
-        rotateY(angle);
-      case FlipAxis.x:
-        rotateX(angle);
-    }
   }
 }

@@ -2,7 +2,7 @@
 
 ## Project Structure
 
-`lib/main.dart` launches `PortfolioPage`. Edit individual portfolio sections in `lib/pages/sections/` and their content in `lib/domain/`, which holds the project, experience, education, and tech stack enums. For example, to add a project card, update `lib/domain/projects/project_enum.dart` and place its image in `assets/images/projects/`. The enum derives the filename from the display name, so `Led Panel` maps to `led_panel.png`.
+`lib/main.dart` launches `PortfolioPage`. Edit individual portfolio sections in `lib/pages/sections/` and their content in `lib/domain/`, which holds the project, experience, education, and tech stack enums. For example, to add a project card, update `lib/domain/projects/project_enum.dart` and place its image in `assets/images/projects/`. Set `fileName` on the enum entry to the asset filename, including its extension (for example, `led_panel.webp`), and register the asset in `pubspec.yaml`.
 
 Keep page-specific widgets in `lib/pages/widgets/` and reusable layouts, animations, and scroll behaviors in `lib/widgets/`. Use `lib/design_system/` for shared typography, colors, and spacing. Register new asset directories and fonts in `pubspec.yaml`. Browser entry files and app icons live in `web/`.
 

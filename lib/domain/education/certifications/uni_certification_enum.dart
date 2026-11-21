@@ -1,46 +1,38 @@
 import 'package:portfolio/domain/education/certifications/certification_item.dart';
 
 enum UniCertificationEnum implements CertificationItem {
-  cloud,
-  scrum,
-  linux;
+  cloud(
+    name: 'CLOUD COMPUTING: AWS - Azure - Google Cloud',
+    link:
+        'https://certificados.uni.edu.pe/verificador/search.php?cert_id=cert_6ca0a49be13ecf1e3eff0a9d231ca232',
+    duration: '24 horas',
+  ),
+  scrum(
+    name: 'Fundamentos de Gestión de Proyectos bajo el enfoque Scrum',
+    link:
+        'https://certificados.uni.edu.pe/verificador/search.php?cert_id=cert_54475e4b8eb8c557a52bfed9a8bb65d4',
+    duration: '16 horas',
+  ),
+  linux(
+    name: 'Fundamentos de Linux',
+    link:
+        'https://certificados.uni.edu.pe/verificador/search.php?cert_id=cert_a0264f71bf9c99fd3d5b7b6251155650',
+    duration: '16 horas',
+  );
+
+  const UniCertificationEnum({
+    required this.name,
+    required this.link,
+    required this.duration,
+  });
+
+  @override
+  final String name;
+  @override
+  final String link;
+  @override
+  final String duration;
 
   @override
   String get issuedBy => 'UNIVERSIDAD NACIONAL DE INGENIERÍA';
-
-  @override
-  String get name {
-    switch (this) {
-      case UniCertificationEnum.cloud:
-        return 'CLOUD COMPUTING: AWS - Azure - Google Cloud';
-      case UniCertificationEnum.scrum:
-        return 'Fundamentos de Gestión de Proyectos bajo el enfoque Scrum';
-      case UniCertificationEnum.linux:
-        return 'Fundamentos de Linux';
-    }
-  }
-
-  @override
-  String get link {
-    switch (this) {
-      case UniCertificationEnum.cloud:
-        return 'https://certificados.uni.edu.pe/verificador/search.php?cert_id=cert_6ca0a49be13ecf1e3eff0a9d231ca232';
-      case UniCertificationEnum.scrum:
-        return 'https://certificados.uni.edu.pe/verificador/search.php?cert_id=cert_54475e4b8eb8c557a52bfed9a8bb65d4';
-      case UniCertificationEnum.linux:
-        return 'https://certificados.uni.edu.pe/verificador/search.php?cert_id=cert_a0264f71bf9c99fd3d5b7b6251155650';
-    }
-  }
-
-  @override
-  String get duration {
-    switch (this) {
-      case UniCertificationEnum.cloud:
-        return '24 horas';
-      case UniCertificationEnum.scrum:
-        return '16 horas';
-      case UniCertificationEnum.linux:
-        return '16 horas';
-    }
-  }
 }

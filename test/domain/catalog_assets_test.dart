@@ -30,8 +30,7 @@ void main() {
             skill.image,
           for (final icon in IconEnum.values) icon.path,
           for (final animation in AnimationEnum.values) animation.path,
-          for (final photo in [MeEnum.casual, MeEnum.ai, MeEnum.software])
-            photo.path,
+          for (final photo in MeEnum.values) photo.path,
         ]),
       );
     },

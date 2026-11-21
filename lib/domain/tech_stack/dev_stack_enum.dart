@@ -1,57 +1,63 @@
 import 'package:flutter/material.dart';
 import 'package:portfolio/domain/tech_stack/tech_stack_item.dart';
 
-enum DevStackEnum implements TechStackItem {
-  react,
-  node,
-  fastapi,
-  django,
-  postgresql,
-  sqlserver;
-
-  @override
-  String get image =>
-      'assets/images/logos/tech_stack/${name.toLowerCase().replaceAll(' ', '_')}.png';
-
-  @override
-  String get description {
-    return switch (this) {
-      DevStackEnum.react =>
+enum DevStackEnum with TechStackItem {
+  react(
+    name: 'React',
+    fileName: 'react.png',
+    description:
         'JavaScript library for building user interfaces with component-based architecture',
-      DevStackEnum.node =>
+    color: Color(0xFF61DAFB),
+  ),
+  node(
+    name: 'Node.js',
+    fileName: 'node.js.png',
+    description:
         'JavaScript runtime for server-side development and backend services',
-      DevStackEnum.fastapi =>
+    color: Color(0xFF68A063),
+  ),
+  fastapi(
+    name: 'FastAPI',
+    fileName: 'fastapi.png',
+    description:
         'Modern Python web framework for building high-performance APIs',
-      DevStackEnum.django =>
+    color: Color(0xFF009688),
+  ),
+  django(
+    name: 'Django',
+    fileName: 'django.png',
+    description:
         'High-level Python web framework for rapid development and clean design',
-      DevStackEnum.postgresql =>
+    color: Color(0xFF092E20),
+  ),
+  postgresql(
+    name: 'PostgreSQL',
+    fileName: 'postgresql.png',
+    description:
         'Powerful open-source relational database with advanced features',
-      DevStackEnum.sqlserver =>
+    color: Color(0xFF336791),
+  ),
+  sqlserver(
+    name: 'SQL Server',
+    fileName: 'sql_server.png',
+    description:
         'Microsoft\'s enterprise relational database management system',
-    };
-  }
+    color: Color(0xFFCC2927),
+  );
+
+  const DevStackEnum({
+    required this.name,
+    required this.fileName,
+    required this.description,
+    required this.color,
+  });
 
   @override
-  String get name {
-    return switch (this) {
-      DevStackEnum.react => 'React',
-      DevStackEnum.node => 'Node.js',
-      DevStackEnum.fastapi => 'FastAPI',
-      DevStackEnum.django => 'Django',
-      DevStackEnum.postgresql => 'PostgreSQL',
-      DevStackEnum.sqlserver => 'SQL Server',
-    };
-  }
-
+  final String name;
   @override
-  Color get color {
-    return switch (this) {
-      DevStackEnum.react => const Color(0xFF61DAFB),
-      DevStackEnum.node => const Color(0xFF68A063),
-      DevStackEnum.fastapi => const Color(0xFF009688),
-      DevStackEnum.django => const Color(0xFF092E20),
-      DevStackEnum.postgresql => const Color(0xFF336791),
-      DevStackEnum.sqlserver => const Color(0xFFCC2927),
-    };
-  }
+  final String fileName;
+  @override
+  final String description;
+  @override
+  final Color color;
 }

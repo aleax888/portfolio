@@ -18,18 +18,31 @@ class AiSide extends StatelessWidget {
       color: ColorPaletteConstants.quaternary,
       child: Stack(
         children: [
-          CustomPadding(
-            child: Row(
-              crossAxisAlignment: .start,
-              mainAxisAlignment: .spaceBetween,
-              children: [
-                Expanded(
-                  flex: 2,
-                  child: AnimatedTranslation(
-                    origin: .fromLeft,
-                    scrollController: scrollController,
+          // AI Image ------------------------------------------------------
+          Positioned.fill(
+            child: AnimatedTranslation(
+              origin: .fromBottom,
+              scrollController: scrollController,
+              child: Align(
+                alignment: .bottomCenter,
+                child: Image.asset(MeEnum.ai.path),
+              ),
+            ),
+          ),
+
+          // Hidden Content ------------------------------------------------------
+          Row(
+            mainAxisAlignment: .spaceBetween,
+            children: [
+              // Title ------------------------------------------------------
+              Expanded(
+                flex: 2,
+                child: AnimatedTranslation(
+                  origin: .fromLeft,
+                  scrollController: scrollController,
+                  child: CustomPadding(
                     child: Text(
-                      'AI-POWERED',
+                      'AGENTIC-AI',
                       style: TextStyle(
                         fontFamily: TextFamilyConstants.primary,
                         color: ColorPaletteConstants.secondary,
@@ -43,32 +56,14 @@ class AiSide extends StatelessWidget {
                     ),
                   ),
                 ),
-                Expanded(flex: 2, child: Container()),
-                Expanded(
-                  flex: 2,
-                  child: Text(
-                    'Building autonomous AI systems, LLM workflows and intelligent automations.',
-                    style: TextStyle(
-                      fontFamily: TextFamilyConstants.secondary,
-                      color: TextColorConstants.light,
-                      fontSize: TextSizeConstants.l,
-                      fontWeight: TextWeightConstants.regular,
-                    ),
-                    textAlign: TextAlign.end,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Positioned.fill(
-            child: AnimatedTranslation(
-              origin: .fromBottom,
-              scrollController: scrollController,
-              child: Align(
-                alignment: .bottomCenter,
-                child: Image.asset(MeEnum.ai.path),
               ),
-            ),
+
+              // AI Hand ------------------------------------------------------
+              Expanded(
+                flex: 1,
+                child: Image.asset(MeEnum.aiHand.path, fit: .scaleDown),
+              ),
+            ],
           ),
         ],
       ),
