@@ -25,10 +25,7 @@ class _PhotoWidgetState extends State<PhotoWidget> {
               ResponsiveFontSize.logarithmic(150, context.viewportSize),
               0,
             ),
-            shadowBlurRadius: ResponsiveFontSize.logarithmic(
-              150,
-              context.viewportSize,
-            ),
+            shadowBlurRadius: 100,
             child: Image.asset(MeEnum.casual.path, fit: .contain),
           ),
         ),
