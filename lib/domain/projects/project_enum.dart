@@ -7,13 +7,14 @@ enum ProjectEnum {
     technologies: ['Flutter'],
     link: 'https://github.com/aleax888/led_panel',
   ),
-  gymFlow(
-    name: 'GymFlow',
-    fileName: 'gymflow.webp',
+  cvGenerator(
+    name: 'CV Generator',
+    fileName: 'cv_generator.webp',
     description:
-        'A smart fitness app that analyzes body joints in real time to automatically detect movements and count exercise repetitions.',
-    technologies: ['Flutter', 'TensorFlow Lite'],
-    link: 'https://www.google.com/search?q=comming+soon&oq=comming+soon',
+        'A modern CV generator that enhances your professional profile using local AI.',
+    technologies: ['Python', 'Jinja2', 'Ollama'],
+
+    link: 'https://github.com/aleax888/ai_powered_latex_cv_generator',
   ),
   textArt(
     name: 'Text art',

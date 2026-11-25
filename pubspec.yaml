@@ -35,7 +35,7 @@ flutter:
     - assets/images/me/casual.png
     - assets/images/me/software.webp
     - assets/images/me/human_hand.png
-    - assets/images/projects/gymflow.webp
+    - assets/images/projects/cv_generator.webp
     - assets/images/projects/led_panel.webp
     - assets/images/projects/text_art.webp
 

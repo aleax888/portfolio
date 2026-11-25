@@ -25,7 +25,7 @@ void main() {
           MaterialApp(
             home: SingleChildScrollView(
               child: ThreeCardLayout(
-                left: card(ProjectEnum.gymFlow, Axis.vertical),
+                left: card(ProjectEnum.cvGenerator, Axis.vertical),
                 topRight: card(ProjectEnum.ledPanel, Axis.horizontal),
                 bottomRight: card(ProjectEnum.textArt),
                 spacing: 12,

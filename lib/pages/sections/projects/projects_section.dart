@@ -29,19 +29,19 @@ class ProjectsSection extends StatelessWidget {
               // Projects -------------------------------------------------------
               ThreeCardLayout(
                 left: ProjectCard(
-                  imagePath: ProjectEnum.gymFlow.image,
                   axis: Axis.vertical,
-                  title: ProjectEnum.gymFlow.name,
-                  description: ProjectEnum.gymFlow.description,
-                  techStack: ProjectEnum.gymFlow.technologies,
-                  link: ProjectEnum.gymFlow.link,
-                ),
-                topRight: ProjectCard(
                   imagePath: ProjectEnum.ledPanel.image,
                   title: ProjectEnum.ledPanel.name,
                   description: ProjectEnum.ledPanel.description,
                   techStack: ProjectEnum.ledPanel.technologies,
                   link: ProjectEnum.ledPanel.link,
+                ),
+                topRight: ProjectCard(
+                  imagePath: ProjectEnum.cvGenerator.image,
+                  title: ProjectEnum.cvGenerator.name,
+                  description: ProjectEnum.cvGenerator.description,
+                  techStack: ProjectEnum.cvGenerator.technologies,
+                  link: ProjectEnum.cvGenerator.link,
                 ),
                 bottomRight: ProjectCard(
                   imagePath: ProjectEnum.textArt.image,
